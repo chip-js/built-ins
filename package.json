@@ -1,0 +1,33 @@
+{
+  "name": "fragments-built-ins",
+  "version": "0.4.6",
+  "description": "Built-in binders, formatters, and animations for fragments.js-based frameworks.",
+  "keywords": [
+    "fragments-js"
+  ],
+  "homepage": "http://github.com/chip-js/built-ins",
+  "author": {
+    "name": "Jacob Wright",
+    "email": "jacwright@gmail.com",
+    "url": "http://github.com/jacwright"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chip-js/built-ins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chip-js/built-ins/issues"
+  },
+  "licenses": {
+    "type": "MIT",
+    "url": "git://github.com/chip-js/built-ins/LICENSE"
+  },
+  "scripts": {
+    "lint": "eslint src",
+    "docs": "docco -o docs */*.js"
+  },
+  "devDependencies": {
+    "docco": "^0.7.0",
+    "eslint": "^1.10.1"
+  }
+}
