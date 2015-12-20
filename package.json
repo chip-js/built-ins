@@ -26,8 +26,7 @@
     "lint": "eslint src",
     "docs": "docco -o docs */*.js"
   },
-  "devDependencies": {
-    "docco": "^0.7.0",
-    "eslint": "^1.10.1"
+  "dependencies": {
+    "differences-js": "0.1.0"
   }
 }
