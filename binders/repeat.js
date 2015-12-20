@@ -1,3 +1,5 @@
+var diff = require('differences-js');
+
 /**
  * A binder that duplicate an element for each item in an array. The expression may be of the format `epxr` or
  * `itemName in expr` where `itemName` is the name each item inside the array will be referenced by within bindings

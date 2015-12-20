@@ -1,45 +1,47 @@
 /**
  * Slide down and up
  */
-module.exports = {
-  property: 'height',
+module.exports = function(options) {
+  if (!options) options = {};
+  if (!options.duration) options.duration = 250;
+  if (!options.easing) options.easing = 'ease-in-out';
+  if (!options.property) options.property = 'height';
 
-  options: {
-    duration: 300,
-    easing: 'ease-in-out'
-  },
+  return {
+    options: options,
 
-  animateIn: function(element, done) {
-    var value = element.getComputedCSS(this.property);
-    if (!value || value === '0px') {
-      return done();
+    animateIn: function(element, done) {
+      var value = element.getComputedCSS(this.options.property);
+      if (!value || value === '0px') {
+        return done();
+      }
+
+      element.style.overflow = 'hidden';
+      element.animate([
+        keyValuePair(this.options.property, '0px'),
+        keyValuePair(this.options.property, value)
+      ], this.options).onfinish = function() {
+        element.style.overflow = '';
+        done();
+      };
+    },
+
+    animateOut: function(element, done) {
+      var value = element.getComputedCSS(this.options.property);
+      if (!value || value === '0px') {
+        return done();
+      }
+
+      element.style.overflow = 'hidden';
+      element.animate([
+        keyValuePair(this.options.property, value),
+        keyValuePair(this.options.property, '0px')
+      ], this.options).onfinish = function() {
+        element.style.overflow = '';
+        done();
+      };
     }
-
-    element.style.overflow = 'hidden';
-    element.animate([
-      keyValuePair(this.property, '0px'),
-      keyValuePair(this.property, value)
-    ], this.options).onfinish = function() {
-      element.style.overflow = '';
-      done();
-    };
-  },
-
-  animateOut: function(element, done) {
-    var value = element.getComputedCSS(this.property);
-    if (!value || value === '0px') {
-      return done();
-    }
-
-    element.style.overflow = 'hidden';
-    element.animate([
-      keyValuePair(this.property, value),
-      keyValuePair(this.property, '0px')
-    ], this.options).onfinish = function() {
-      element.style.overflow = '';
-      done();
-    };
-  }
+  };
 };
 
 function keyValuePair(key, value) {
