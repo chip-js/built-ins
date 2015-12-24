@@ -125,7 +125,7 @@ module.exports = function(fragments) {
    * And when the user changes the text in the first input to "Jac", `user.firstName` will be updated immediately with
    * the value of `'Jac'`.
    */
-  fragments.registerAttribute('value', require('./value')());
+  fragments.registerAttribute('value', require('./value')('value-events', 'value-field'));
 
 
   /**
@@ -264,7 +264,7 @@ module.exports = function(fragments) {
    * </ul>
    * ```
    */
-  var IfBinding = require('./attributes')('else-if', 'else', 'unless', 'unless-if');
+  var IfBinding = require('./if')('else-if', 'else', 'unless', 'unless-if');
   fragments.registerAttribute('if', IfBinding);
   fragments.registerAttribute('unless', IfBinding);
 
@@ -306,6 +306,6 @@ module.exports = function(fragments) {
    * </div>
    * ```
    */
-  fragments.registerAttribute('repeat', require('./show')());
+  fragments.registerAttribute('repeat', require('./repeat')());
 
 };

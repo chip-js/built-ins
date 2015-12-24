@@ -14,10 +14,10 @@ module.exports = function() {
       var parent = this.element.parentNode;
       var placeholder = document.createTextNode('');
       parent.insertBefore(placeholder, this.element);
-      this.template = fragments.createTemplate(this.element);
+      this.template = this.fragments.createTemplate(this.element);
       this.element = placeholder;
 
-      var parts = this.expression.split(/\s+in\s+/);
+      var parts = this.expression.split(/\s+(in|of)\s+/);
       this.expression = parts.pop();
       var key = parts.pop();
       if (key) {
