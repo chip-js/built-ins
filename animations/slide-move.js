@@ -1,4 +1,5 @@
 var slideAnimation = require('./slide');
+var animating = new Map();
 
 /**
  * Move items up and down in a list
@@ -13,7 +14,7 @@ module.exports = function(options) {
     options: options,
 
     animateIn: function(element, done) {
-      var value = element.getComputedCSS(property);
+      var value = element.getComputedCSS(options.property);
       if (!value || value === '0px') {
         return done();
       }
@@ -29,8 +30,8 @@ module.exports = function(options) {
       // Do the slide
       element.style.overflow = 'hidden';
       element.animate([
-        keyValuePair(property, '0px'),
-        keyValuePair(property, value)
+        keyValuePair(options.property, '0px'),
+        keyValuePair(options.property, value)
       ], this.options).onfinish = function() {
         element.style.overflow = '';
         done();
@@ -38,7 +39,7 @@ module.exports = function(options) {
     },
 
     animateOut: function(element, done) {
-      var value = element.getComputedCSS(property);
+      var value = element.getComputedCSS(options.property);
       if (!value || value === '0px') {
         return done();
       }
@@ -56,8 +57,8 @@ module.exports = function(options) {
       // Do the slide
       element.style.overflow = 'hidden';
       element.animate([
-        keyValuePair(property, value),
-        keyValuePair(property, '0px')
+        keyValuePair(options.property, value),
+        keyValuePair(options.property, '0px')
       ], this.options).onfinish = function() {
         element.style.overflow = '';
         done();

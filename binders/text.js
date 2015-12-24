@@ -20,6 +20,8 @@
  * </div>
  * ```
  */
-module.exports = function(value) {
-  this.element.textContent = (value == null) ? '' : value;
+module.exports = function() {
+  return function(value) {
+    this.element.textContent = (value == null) ? '' : value;
+  };
 };

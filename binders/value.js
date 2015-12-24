@@ -4,68 +4,68 @@ var inputMethods, defaultInputMethod;
  * A binder that sets the value of an HTML form element. This binder also updates the data as it is changed in
  * the form element, providing two way binding. Can use for "checked" as well.
  */
-module.exports = {
-  onlyWhenBound: true,
-  eventsAttrName: 'value-events',
-  fieldAttrName: 'value-field',
-  defaultEvents: [ 'change' ],
+module.exports = function(eventsAttrName, fieldAttrName) {
+  return {
+    onlyWhenBound: true,
+    defaultEvents: [ 'change' ],
 
-  compiled: function() {
-    var name = this.element.tagName.toLowerCase();
-    var type = this.element.type;
-    this.methods = inputMethods[type] || inputMethods[name];
+    compiled: function() {
+      var name = this.element.tagName.toLowerCase();
+      var type = this.element.type;
+      this.methods = inputMethods[type] || inputMethods[name];
 
-    if (!this.methods) {
-      return false;
-    }
+      if (!this.methods) {
+        return false;
+      }
 
-    if (this.element.hasAttribute(this.eventsAttrName)) {
-      this.events = this.element.getAttribute(this.eventsAttrName).split(' ');
-      this.element.removeAttribute(this.eventsAttrName);
-    } else if (name !== 'option') {
-      this.events = this.defaultEvents;
-    }
+      if (eventsAttrName && this.element.hasAttribute(eventsAttrName)) {
+        this.events = this.element.getAttribute(eventsAttrName).split(' ');
+        this.element.removeAttribute(eventsAttrName);
+      } else if (name !== 'option') {
+        this.events = this.defaultEvents;
+      }
 
-    if (this.element.hasAttribute(this.fieldAttrName)) {
-      this.valueField = this.element.getAttribute(this.fieldAttrName);
-      this.element.removeAttribute(this.fieldAttrName);
-    }
+      if (fieldAttrName && this.element.hasAttribute(fieldAttrName)) {
+        this.valueField = this.element.getAttribute(fieldAttrName);
+        this.element.removeAttribute(fieldAttrName);
+      }
 
-    if (type === 'option') {
-      this.valueField = this.element.parentNode.valueField;
-    }
-  },
+      if (type === 'option') {
+        this.valueField = this.element.parentNode.valueField;
+      }
+    },
 
-  created: function() {
-    if (!this.events) return; // nothing for <option> here
-    var element = this.element;
-    var observer = this.observer;
-    var input = this.methods;
-    var valueField = this.valueField;
+    created: function() {
+      if (!this.events) return; // nothing for <option> here
+      var element = this.element;
+      var observer = this.observer;
+      var input = this.methods;
+      var valueField = this.valueField;
 
-    // The 2-way binding part is setting values on certain events
-    function onChange() {
-      if (input.get.call(element, valueField) !== observer.oldValue && !element.readOnly) {
-        observer.set(input.get.call(element, valueField));
+      // The 2-way binding part is setting values on certain events
+      function onChange() {
+        if (input.get.call(element, valueField) !== observer.oldValue && !element.readOnly) {
+          observer.set(input.get.call(element, valueField));
+        }
+      }
+
+      if (element.type === 'text') {
+        element.addEventListener('keydown', function(event) {
+          if (event.keyCode === 13) onChange();
+        });
+      }
+
+      this.events.forEach(function(event) {
+        element.addEventListener(event, onChange);
+      });
+    },
+
+    updated: function(value) {
+      if (this.methods.get.call(this.element, this.valueField) != value) {
+        this.methods.set.call(this.element, value, this.valueField);
       }
     }
-
-    if (element.type === 'text') {
-      element.addEventListener('keydown', function(event) {
-        if (event.keyCode === 13) onChange();
-      });
-    }
-
-    this.events.forEach(function(event) {
-      element.addEventListener(event, onChange);
-    });
-  },
-
-  updated: function(value) {
-    if (this.methods.get.call(this.element, this.valueField) != value) {
-      this.methods.set.call(this.element, value, this.valueField);
-    }
-  }
+  };
 };
 
 

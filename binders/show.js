@@ -4,7 +4,8 @@
  * must remain in-DOM or bindings within it must continue to be processed while it is hidden. You should default to
  * using `if`.
  */
-module.exports = function(isShow) {
+module.exports = function(isHide) {
+  var isShow = !isHide;
   return {
     animated: true,
 
@@ -62,4 +63,4 @@ module.exports = function(isShow) {
       this.animating = false;
     }
   };
-});
+};

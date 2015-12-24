@@ -15,9 +15,12 @@ module.exports = function(fragments) {
   fragments.registerFormatter('escape', require('./escape'));
   fragments.registerFormatter('filter', require('./filter'));
   fragments.registerFormatter('float', require('./float'));
+  fragments.registerFormatter('format', require('./format'));
   fragments.registerFormatter('int', require('./int'));
+  fragments.registerFormatter('json', require('./json'));
   fragments.registerFormatter('limit', require('./limit'));
   fragments.registerFormatter('log', require('./log'));
+  fragments.registerFormatter('lower', require('./lower'));
   fragments.registerFormatter('map', require('./map'));
   fragments.registerFormatter('newline', require('./newline'));
   fragments.registerFormatter('p', require('./p'));
@@ -25,4 +28,5 @@ module.exports = function(fragments) {
   fragments.registerFormatter('slice', require('./slice'));
   fragments.registerFormatter('sort', require('./sort'));
   fragments.registerFormatter('time', require('./time'));
+  fragments.registerFormatter('upper', require('./upper'));
 };

@@ -19,7 +19,7 @@ var keys = {
  * more robust shortcuts are required use the shortcut binder.
  */
 module.exports = function(specificKeyName, specificEventName) {
-  var eventBinder = require('./event')(specificEventName);
+  var eventBinder = require('./events')(specificEventName);
 
   return {
     compiled: function() {
@@ -55,4 +55,4 @@ module.exports = function(specificKeyName, specificEventName) {
     setEvent: eventBinder.setEvent,
     clearEvent: eventBinder.clearEvent
   };
-});
+};

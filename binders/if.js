@@ -19,18 +19,18 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
       element.parentNode.replaceChild(placeholder, element);
 
       // Stores a template for all the elements that can go into this spot
-      this.templates = [ fragments.createTemplate(element) ];
+      this.templates = [ this.fragments.createTemplate(element) ];
 
       // Pull out any other elements that are chained with this one
       while (node) {
         var next = node.nextElementSibling;
         var expression;
         if (node.hasAttribute(elseIfAttrName)) {
-          expression = fragments.codifyExpression('attribute', node.getAttribute(elseIfAttrName));
+          expression = this.fragments.codifyExpression('attribute', node.getAttribute(elseIfAttrName));
           expressions.push(wrapIfExp(expression, false));
           node.removeAttribute(elseIfAttrName);
         } else if (node.hasAttribute(elseUnlessAttrName)) {
-          expression = fragments.codifyExpression('attribute', node.getAttribute(elseUnlessAttrName));
+          expression = this.fragments.codifyExpression('attribute', node.getAttribute(elseUnlessAttrName));
           expressions.push(wrapIfExp(expression, true));
           node.removeAttribute(elseUnlessAttrName);
         } else if (node.hasAttribute(elseAttrName)) {
@@ -41,7 +41,7 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
         }
 
         node.remove();
-        this.templates.push(fragments.createTemplate(node));
+        this.templates.push(this.fragments.createTemplate(node));
         node = next;
       }
 
