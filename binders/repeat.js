@@ -17,7 +17,7 @@ module.exports = function() {
       this.template = this.fragments.createTemplate(this.element);
       this.element = placeholder;
 
-      var parts = this.expression.split(/\s+(in|of)\s+/);
+      var parts = this.expression.split(/\s+in\s+|\s+of\s+/);
       this.expression = parts.pop();
       var key = parts.pop();
       if (key) {

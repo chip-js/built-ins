@@ -36,8 +36,10 @@ module.exports = function(definition) {
       if (this.template) {
         this.view = this.template.createView();
         this.element.appendChild(this.view);
-        if (this.content) this._componentContent = this.content;
-      } else {
+        if (this.content) {
+          this._componentContent = this.content;
+        }
+      } else if (this.content) {
         this.element.appendChild(this.content);
       }
 
@@ -47,27 +49,34 @@ module.exports = function(definition) {
         }, this);
       }, this);
 
-      if (typeof this.element.created === 'function') {
-        this.element.created();
-      }
+      // Don't call created until after all definitions have been copied over
+      definitions.forEach(function(definition) {
+        if (typeof definition.created === 'function') {
+          definition.created.call(this.element);
+        }
+      }, this);
     },
 
     bound: function() {
       if (this.view) this.view.bind(this.element);
       if (this.content) this.content.bind(this.context);
 
-      if (typeof this.element.attached === 'function') {
-        this.element.attached();
-      }
+      definitions.forEach(function(definition) {
+        if (typeof definition.attached === 'function') {
+          definition.attached.call(this.element);
+        }
+      }, this);
     },
 
     unbound: function() {
       if (this.content) this.content.unbind();
       if (this.view) this.view.unbind();
 
-      if (typeof this.element.detached === 'function') {
-        this.element.detached();
-      }
+      definitions.forEach(function(definition) {
+        if (typeof definition.detached === 'function') {
+          definition.detached.call(this.element);
+        }
+      }, this);
     }
   };
 };
