@@ -4,7 +4,7 @@ var animating = new Map();
 /**
  * Move items up and down in a list
  */
-module.exports = function(options) {
+module.exports = function(fragments, options) {
   if (!options) options = {};
   if (!options.duration) options.duration = 250;
   if (!options.easing) options.easing = 'ease-in-out';
