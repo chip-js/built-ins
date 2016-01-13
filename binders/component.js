@@ -1,8 +1,10 @@
+var slice = Array.prototype.slice;
+
 /**
  * An element binder that binds the template on the definition to fill the contents of the element that matches.
  */
 module.exports = function(definition) {
-  var definitions = Array.prototype.slice(arguments);
+  var definitions = slice.call(arguments);
 
   if (!definition) {
     throw new TypeError('Must provide a definition object to define the custom component');
@@ -44,7 +46,7 @@ module.exports = function(definition) {
       }
 
       definitions.forEach(function(definition) {
-        Object.keys(definition).forEach(function() {
+        Object.keys(definition).forEach(function(key) {
           this.element[key] = definition[key];
         }, this);
       }, this);
