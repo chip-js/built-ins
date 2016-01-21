@@ -17,7 +17,7 @@ module.exports = function(value, target) {
     if (match.charAt(0) === '<') {
       return match;
     }
-    var replacedText = match.replace(urlExp, '$1<a href="$2"' + target + '>$2</a>');
-    return replacedText.replace(wwwExp, '$1<a href="http://$2"' + target + '>$2</a>');
+    var replacedText = match.replace(urlExp, '$1<a href="$2"' + targetString + '>$2</a>');
+    return replacedText.replace(wwwExp, '$1<a href="http://$2"' + targetString + '>$2</a>');
   });
 };
