@@ -3,6 +3,7 @@
  */
 module.exports = function(specificPropertyName) {
   return {
+    priority: 10,
 
     created: function() {
       this.twoWayObserver = this.observe(specificPropertyName || this.camelCase, this.sendUpdate, this);
