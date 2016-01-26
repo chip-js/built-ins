@@ -66,6 +66,7 @@ module.exports = function(definition) {
       definitions.forEach(function(definition) {
         if (typeof definition.attached === 'function') {
           definition.attached.call(this.element);
+          this.fragments.sync();
         }
       }, this);
     },
