@@ -3,6 +3,8 @@
  */
 module.exports = function(specificPropertyName) {
   return {
+    priority: 10,
+
     updated: function(value) {
       this.element[specificPropertyName || this.camelCase] = value;
     }
