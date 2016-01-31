@@ -16,12 +16,11 @@ module.exports = function(definition) {
   return {
 
     compiled: function() {
-      if (definition.template && !definition.template.pool) {
+      if (definition.template && !definition.template.pool && !definition._compiling) {
+        // Set this before compiling so we don't get into infinite loops if there is template recursion
+        definition._compiling = true;
         definition.template = this.fragments.createTemplate(definition.template);
-      }
-
-      if (definition.template) {
-        this.template = definition.template;
+        delete definition._compiling;
       }
 
       if (this.element.childNodes.length) {
@@ -35,8 +34,8 @@ module.exports = function(definition) {
         this.content = this.contentTemplate.createView();
       }
 
-      if (this.template) {
-        this.view = this.template.createView();
+      if (definition.template) {
+        this.view = definition.template.createView();
         this.element.appendChild(this.view);
         if (this.content) {
           this._componentContent = this.content;
