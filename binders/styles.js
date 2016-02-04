@@ -32,7 +32,7 @@ module.exports = function(specificStyleName, specificUnit) {
     },
 
     updated: function(value) {
-      this.element.styles[this.styleName] = (value == null) ? '' : value + this.unit;
+      this.element.style[this.styleName] = (value == null) ? '' : value + this.unit;
     }
   };
 };
