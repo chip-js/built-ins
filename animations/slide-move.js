@@ -27,11 +27,16 @@ module.exports = function(fragments, options) {
         });
       }
 
+      var before = {};
+      var after = {};
+      before[this.options.property] = '0px';
+      after[this.options.property] = value;
+
       // Do the slide
       element.style.overflow = 'hidden';
       element.animate([
-        keyValuePair(options.property, '0px'),
-        keyValuePair(options.property, value)
+        before,
+        after
       ], this.options).onfinish = function() {
         element.style.overflow = '';
         done();
@@ -54,11 +59,16 @@ module.exports = function(fragments, options) {
         }
       }
 
+      var before = {};
+      var after = {};
+      before[this.options.property] = value;
+      after[this.options.property] = '0px';
+
       // Do the slide
       element.style.overflow = 'hidden';
       element.animate([
-        keyValuePair(options.property, value),
-        keyValuePair(options.property, '0px')
+        before,
+        after
       ], this.options).onfinish = function() {
         element.style.overflow = '';
         done();
@@ -105,9 +115,3 @@ module.exports = function(fragments, options) {
     }
   };
 };
-
-function keyValuePair(key, value) {
-  var obj = {};
-  obj[key] = value;
-  return obj;
-}
