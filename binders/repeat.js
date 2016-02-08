@@ -147,13 +147,14 @@ module.exports = function() {
         // The last animation finished will run this
         if (--whenDone.count !== 0) return;
 
-        allRemoved.forEach(this.removeView);
-
-        this.animating = false;
-        if (this.valueWhileAnimating) {
-          var changes = diff.arrays(this.valueWhileAnimating, animatingValue);
-          this.updateChangesAnimated(this.valueWhileAnimating, changes);
-          this.valueWhileAnimating = null;
+        if (this.animating) {
+          allRemoved.forEach(this.removeView);
+          this.animating = false;
+          if (this.valueWhileAnimating) {
+            var changes = diff.arrays(this.valueWhileAnimating, animatingValue);
+            this.updateChangesAnimated(this.valueWhileAnimating, changes);
+            this.valueWhileAnimating = null;
+          }
         }
       }
       whenDone.count = 0;
@@ -197,6 +198,7 @@ module.exports = function() {
     unbound: function() {
       this.views.forEach(function(view) {
         view.unbind();
+        view._repeatItem_ = null;
       });
       this.valueWhileAnimating = null;
       this.animating = false;
