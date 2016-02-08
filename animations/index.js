@@ -11,4 +11,6 @@ module.exports = function(fragments) {
   fragments.registerAnimation('slide-h', require('./slide-horizontal')());
   fragments.registerAnimation('slide-move', require('./slide-move')(fragments));
   fragments.registerAnimation('slide-move-h', require('./slide-move-horizontal')(fragments));
+  fragments.registerAnimation('slide-fade', require('./slide-fade')());
+  fragments.registerAnimation('slide-fade-h', require('./slide-fade-horizontal')());
 };

@@ -1,5 +1,5 @@
 /**
- * Slide down and up
+ * Slide down and up and fade in and out
  */
 module.exports = function(options) {
   if (!options) options = {};
@@ -16,8 +16,9 @@ module.exports = function(options) {
         return done();
       }
 
-      var before = {};
-      var after = {};
+      var before = { opacity: '0' };
+      var after = { opacity: '1' };
+
       before[this.options.property] = '0px';
       after[this.options.property] = value;
 
@@ -37,8 +38,8 @@ module.exports = function(options) {
         return done();
       }
 
-      var before = {};
-      var after = {};
+      var before = { opacity: '1' };
+      var after = { opacity: '0' };
       before[this.options.property] = value;
       after[this.options.property] = '0px';
 
