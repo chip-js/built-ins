@@ -35,9 +35,12 @@ module.exports = function(isHide) {
 
       this.animating = true;
       function onFinish() {
-        this.animating = false;
-        if (this.lastValue !== value) {
-          this.updatedAnimated(this.lastValue);
+        // If this.animating is false then the element was unbound during the animation
+        if (this.animating) {
+          this.animating = false;
+          if (this.lastValue !== value) {
+            this.updatedAnimated(this.lastValue);
+          }
         }
       }
 
