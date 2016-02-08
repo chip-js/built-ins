@@ -4,11 +4,11 @@
 module.exports = function () {
   return {
     bound: function() {
-      this.context[this.match || this.expression] = this.element;
+      this.context[this.camelCase || this.expression] = this.element;
     },
 
     unbound: function() {
-      this.context[this.match || this.expression] = null;
+      this.context[this.camelCase || this.expression] = null;
     }
   };
 };
