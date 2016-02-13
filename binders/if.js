@@ -79,8 +79,8 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
       var template = this.templates[index];
       if (template) {
         this.showing = template.createView();
-        this.showing.bind(this.context);
         this.add(this.showing);
+        this.showing.bind(this.context);
       }
     },
 

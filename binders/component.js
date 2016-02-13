@@ -30,17 +30,14 @@ module.exports = function(definition) {
     },
 
     created: function() {
-      if (this.contentTemplate) {
-        this.content = this.contentTemplate.createView();
-      }
-
       if (definition.template) {
         this.view = definition.template.createView();
         this.element.appendChild(this.view);
-        if (this.content) {
-          this._componentContent = this.content;
+        if (this.contentTemplate) {
+          this.element._componentContent = this.contentTemplate;
         }
-      } else if (this.content) {
+      } else if (this.contentTemplate) {
+        this.content = this.contentTemplate.createView();
         this.element.appendChild(this.content);
       }
 
@@ -59,6 +56,7 @@ module.exports = function(definition) {
     },
 
     bound: function() {
+      this.element._parentContext = this.context;
       if (this.view) this.view.bind(this.element);
       if (this.content) this.content.bind(this.context);
 
