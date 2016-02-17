@@ -147,8 +147,9 @@ module.exports = function() {
         // The last animation finished will run this
         if (--whenDone.count !== 0) return;
 
+        allRemoved.forEach(this.removeView);
+
         if (this.animating) {
-          allRemoved.forEach(this.removeView);
           this.animating = false;
           if (this.valueWhileAnimating) {
             var changes = diff.arrays(this.valueWhileAnimating, animatingValue);
