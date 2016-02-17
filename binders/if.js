@@ -63,6 +63,7 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
     },
 
     add: function(view) {
+      view.bind(this.context);
       this.element.parentNode.insertBefore(view, this.element.nextSibling);
     },
 
@@ -80,7 +81,6 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
       if (template) {
         this.showing = template.createView();
         this.add(this.showing);
-        this.showing.bind(this.context);
       }
     },
 
@@ -117,7 +117,6 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
       var template = this.templates[index];
       if (template) {
         this.showing = template.createView();
-        this.showing.bind(this.context);
         this.add(this.showing);
         this.animating = true;
         this.animateIn(this.showing, function() {
