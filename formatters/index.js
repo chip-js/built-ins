@@ -25,6 +25,7 @@ module.exports = function(fragments) {
   fragments.registerFormatter('newline', require('./newline'));
   fragments.registerFormatter('p', require('./p'));
   fragments.registerFormatter('reduce', require('./reduce'));
+  fragments.registerFormatter('reverse', require('./reverse'));
   fragments.registerFormatter('slice', require('./slice'));
   fragments.registerFormatter('sort', require('./sort'));
   fragments.registerFormatter('time', require('./time'));
