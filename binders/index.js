@@ -127,6 +127,8 @@ module.exports = function(fragments) {
    */
   fragments.registerAttribute('value', require('./value')('value-events', 'value-field'));
 
+  // fragments.registerAttribute('name', require('./radio')('value'));
+
 
   /**
    * ## on-[event]
