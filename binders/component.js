@@ -19,7 +19,12 @@ module.exports = function(definition) {
         this.compileTemplate();
       }
 
-      if (this.element.childNodes.length) {
+      var empty = !this.element.childNodes.length ||
+                  (this.element.childNodes.length === 1 &&
+                   this.element.firstChild.nodeType === Node.TEXT_NODE &&
+                   !this.element.firstChild.textContent.trim()
+                  );
+      if (!empty) {
         // Use the contents of this component to be inserted within it
         this.contentTemplate = this.fragments.createTemplate(this.element.childNodes);
       }
