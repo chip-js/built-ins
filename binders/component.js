@@ -4,11 +4,17 @@ var slice = Array.prototype.slice;
  * An element binder that binds the template on the definition to fill the contents of the element that matches. Can be
  * used as an attribute binder as well.
  */
-module.exports = function(definition) {
+module.exports = function(componentLoader) {
   var definitions = slice.call(arguments);
 
+  if (typeof componentLoader === 'function') {
+    definitions.shift();
+  } else {
+    componentLoader = null;
+  }
+
   // The last definition is the most important, any others are mixins
-  definition = definitions[definitions.length - 1];
+  var definition = definitions[definitions.length - 1];
 
   return {
 
@@ -37,6 +43,10 @@ module.exports = function(definition) {
     updated: function(definition) {
       this.detached();
       this.unmake();
+
+      if (typeof definition === 'string' && componentLoader) {
+        definition = componentLoader.call(this, definition);
+      }
 
       if (Array.isArray(definition)) {
         this.definitions = definition;
