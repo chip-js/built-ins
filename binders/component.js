@@ -100,8 +100,8 @@ module.exports = function(componentLoader) {
       }
 
       this.definitions.forEach(function(definition) {
-        Object.keys(definition).forEach(function(key) {
-          this.element[key] = definition[key];
+        Object.getOwnPropertyNames(definition).forEach(function(key) {
+          Object.defineProperty(this.element, key, Object.getOwnPropertyDescriptor(definition, key));
         }, this);
       }, this);
 
