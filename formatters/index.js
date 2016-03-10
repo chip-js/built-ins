@@ -18,6 +18,7 @@ module.exports = function(fragments) {
   fragments.registerFormatter('format', require('./format'));
   fragments.registerFormatter('int', require('./int'));
   fragments.registerFormatter('json', require('./json'));
+  fragments.registerFormatter('keys', require('./keys'));
   fragments.registerFormatter('limit', require('./limit'));
   fragments.registerFormatter('log', require('./log'));
   fragments.registerFormatter('lower', require('./lower'));
