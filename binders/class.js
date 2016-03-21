@@ -8,24 +8,31 @@ module.exports = function() {
 
     updated: function(value) {
       var classList = this.element.classList;
-
-      if (this.classes) {
-        this.classes.forEach(function(className) {
-          if (className) {
-            classList.remove(className);
-          }
-        });
-      }
+      var classes = {};
 
       if (value) {
-        this.classes = value.split(/\s+/);
-        this.classes.forEach(function(className) {
-          if (className) {
-            classList.add(className);
-          }
+        if (typeof value === 'string') {
+          value.split(/\s+/).forEach(funtion(className) {
+            if (className) classes[className] = true;
+          });
+        } else if (typeof value === 'object') {
+          Object.keys(value).forEach(funtion(className) {
+            if (value[className]) classes[className] = true;
+          });
+        }
+      }
+
+      if (this.classes) {
+        Object.keys(this.classes).forEach(function(className) {
+          if (!classes[className]) classList.remove(className);
         });
       }
 
+      Object.keys(classes).forEach(function(className) {
+        classList.add(className);
+      });
+
+      this.classes = classes;
     }
   };
 };
