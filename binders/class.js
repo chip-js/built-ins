@@ -12,11 +12,11 @@ module.exports = function() {
 
       if (value) {
         if (typeof value === 'string') {
-          value.split(/\s+/).forEach(funtion(className) {
+          value.split(/\s+/).forEach(function(className) {
             if (className) classes[className] = true;
           });
         } else if (typeof value === 'object') {
-          Object.keys(value).forEach(funtion(className) {
+          Object.keys(value).forEach(function(className) {
             if (value[className]) classes[className] = true;
           });
         }
