@@ -99,12 +99,11 @@ module.exports = function() {
       var addedCount = 0;
 
       changes.forEach(function(splice) {
-        addedCount += splice.addedCount;
-        if (!splice.removed.length) {
-          return;
+        if (splice.removed.length) {
+          var removed = this.views.splice(splice.index - addedCount, splice.removed.length);
+          removed.forEach(this.removeView);
         }
-        var removed = this.views.splice(splice.index - addedCount, splice.removed.length);
-        removed.forEach(this.removeView);
+        addedCount += splice.addedCount;
       }, this);
 
       // Add the new/moved views
