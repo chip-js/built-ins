@@ -88,6 +88,11 @@ module.exports = function() {
 
         this.element.parentNode.insertBefore(frag, this.element.nextSibling);
       }
+
+      // Expose the index
+      this.views.forEach(function(view, i) {
+        view.index = i;
+      });
     },
 
     /**
@@ -125,6 +130,11 @@ module.exports = function() {
         var nextSibling = previousView ? previousView.lastViewNode.nextSibling : this.element.nextSibling;
         this.element.parentNode.insertBefore(fragment, nextSibling);
       }, this);
+
+      // Expose the index
+      this.views.forEach(function(view, i) {
+        view.index = i;
+      });
     },
 
     /**
