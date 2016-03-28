@@ -19,6 +19,17 @@ module.exports = function(componentLoader) {
   return {
 
     compiled: function() {
+      if(this.element.getAttribute('[unwrap]') !== null) {
+        var parent = this.element.parentNode;
+        var placeholder = document.createTextNode('');
+        parent.insertBefore(placeholder, this.element);
+        parent.removeChild(this.element);
+        this.element = placeholder;
+        this.unwrapped = true;
+      } else {
+        this.unwrapped = false;
+      }
+
       if (definition) {
         this.definition = definition;
         this.definitions = definitions;
@@ -90,7 +101,12 @@ module.exports = function(componentLoader) {
 
       if (this.definition.template) {
         this.view = this.definition.template.createView();
-        this.element.appendChild(this.view);
+        if(this.unwrapped) {
+          var parent = this.element.parentNode;
+          parent.insertBefore(this.view, this.element.nextSibling);
+        } else {
+          this.element.appendChild(this.view);
+        }
         if (this.contentTemplate) {
           this.element._componentContent = this.contentTemplate;
         }
