@@ -46,6 +46,13 @@ module.exports = function() {
         } else {
           this.updateChanges(value, changes);
         }
+
+        // Keep the array indexesq updated as the array changes
+        if (Array.isArray(value) && this.keyName) {
+          this.views.forEach(function(view, i) {
+            view.context[this.keyName] = i;
+          }, this);
+        }
       }
     },
 
