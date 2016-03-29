@@ -5,10 +5,15 @@ module.exports = function() {
   return {
 
     bound: function() {
-      var element = this.element;
-      setTimeout(function() {
-        element.focus();
-      });
+      if (!this.expression || this.observer.get()) {
+        this.focus();
+      }
+    },
+
+    focus: function() {
+      this.fragments.afterSync(function() {
+        this.element.focus();
+      }.bind(this));
     }
 
   };
