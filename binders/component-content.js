@@ -10,12 +10,21 @@ module.exports = function() {
       }
     },
 
+    attached: function() {
+      if (this.content) this.content.attached();
+    },
+
+    detached: function() {
+      if (this.content) this.content.detached();
+    },
+
     bound: function() {
       var template = this.context._componentContent || this.defaultContent;
       if (template) {
         this.content = template.createView();
-        this.element.appendChild(this.content);
         this.content.bind(this.context);
+        this.element.appendChild(this.content);
+        this.content.attached();
       }
     },
 

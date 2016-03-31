@@ -19,7 +19,7 @@ module.exports = function(componentLoader) {
   return {
 
     compiled: function() {
-      if(this.element.getAttribute('[unwrap]') !== null) {
+      if (this.element.getAttribute('[unwrap]') !== null) {
         var parent = this.element.parentNode;
         var placeholder = document.createTextNode('');
         parent.insertBefore(placeholder, this.element);
@@ -34,6 +34,8 @@ module.exports = function(componentLoader) {
         this.definition = definition;
         this.definitions = definitions;
         this.compileTemplate();
+      } else {
+        this.definitions = [];
       }
 
       var empty = !this.element.childNodes.length ||
@@ -76,11 +78,6 @@ module.exports = function(componentLoader) {
 
     bound: function() {
       this.element._parentContext = this.context;
-      this.attached();
-    },
-
-    unbound: function() {
-      this.detached();
     },
 
     compileTemplate: function() {
@@ -100,12 +97,12 @@ module.exports = function(componentLoader) {
       this.compileTemplate();
 
       if (this.definition.template) {
-        this.view = this.definition.template.createView();
+        this.componentView = this.definition.template.createView();
         if(this.unwrapped) {
           var parent = this.element.parentNode;
-          parent.insertBefore(this.view, this.element.nextSibling);
+          parent.insertBefore(this.componentView, this.element.nextSibling);
         } else {
-          this.element.appendChild(this.view);
+          this.element.appendChild(this.componentView);
         }
         if (this.contentTemplate) {
           this.element._componentContent = this.contentTemplate;
@@ -139,9 +136,9 @@ module.exports = function(componentLoader) {
         this.content = null;
       }
 
-      if (this.view) {
-        this.view.dispose();
-        this.view = null;
+      if (this.componentView) {
+        this.componentView.dispose();
+        this.componentView = null;
       }
 
       this.definitions.forEach(function(definition) {
@@ -156,7 +153,7 @@ module.exports = function(componentLoader) {
         return;
       }
 
-      if (this.view) this.view.bind(this.element);
+      if (this.componentView) this.componentView.bind(this.element);
       if (this.content) this.content.bind(this.context);
 
       this.definitions.forEach(function(definition) {
@@ -165,6 +162,8 @@ module.exports = function(componentLoader) {
           this.fragments.sync();
         }
       }, this);
+
+      if (this.componentView) this.componentView.attached();
     },
 
     detached: function() {
@@ -173,13 +172,15 @@ module.exports = function(componentLoader) {
       }
 
       if (this.content) this.content.unbind();
-      if (this.view) this.view.unbind();
+      if (this.componentView) this.componentView.unbind();
 
       this.definitions.forEach(function(definition) {
         if (typeof definition.detached === 'function') {
           definition.detached.call(this.element);
         }
       }, this);
+
+      if (this.componentView) this.componentView.detached();
     }
 
   };
