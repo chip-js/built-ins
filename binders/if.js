@@ -62,9 +62,22 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
       this.firstUpdate = false;
     },
 
+    attached: function() {
+      if (this.showing) {
+        this.showing.attached();
+      }
+    },
+
+    detached: function() {
+      if (this.showing) {
+        this.showing.detached();
+      }
+    },
+
     add: function(view) {
       view.bind(this.context);
       this.element.parentNode.insertBefore(view, this.element.nextSibling);
+      view.attached();
     },
 
     // Doesn't do much, but allows sub-classes to alter the functionality.

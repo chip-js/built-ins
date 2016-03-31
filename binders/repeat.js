@@ -32,6 +32,18 @@ module.exports = function() {
       this.observer.getChangeRecords = true;
     },
 
+    attached: function() {
+      this.views.forEach(function(view) {
+        view.attached();
+      });
+    },
+
+    detached: function() {
+      this.views.forEach(function(view) {
+        view.detached();
+      });
+    },
+
     removeView: function(view) {
       view.dispose();
       view._repeatItem_ = null;
@@ -94,6 +106,7 @@ module.exports = function() {
         }, this);
 
         this.element.parentNode.insertBefore(frag, this.element.nextSibling);
+        if (this.view.inDOM) this.attached();
       }
     },
 
@@ -131,6 +144,7 @@ module.exports = function() {
         var previousView = this.views[index - 1];
         var nextSibling = previousView ? previousView.lastViewNode.nextSibling : this.element.nextSibling;
         this.element.parentNode.insertBefore(fragment, nextSibling);
+        if (this.view.inDOM) this.attached();
       }, this);
     },
 
@@ -184,6 +198,7 @@ module.exports = function() {
         var previousView = this.views[index - 1];
         var nextSibling = previousView ? previousView.lastViewNode.nextSibling : this.element.nextSibling;
         this.element.parentNode.insertBefore(fragment, nextSibling);
+        if (this.view.inDOM) this.attached();
 
         allAdded = allAdded.concat(addedViews);
         allRemoved = allRemoved.concat(removedViews);
