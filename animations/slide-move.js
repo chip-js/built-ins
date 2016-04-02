@@ -4,7 +4,7 @@ var animating = new Map();
 /**
  * Move items up and down in a list
  */
-module.exports = function(fragments, options) {
+module.exports = function(options) {
   if (!options) options = {};
   if (!options.duration) options.duration = 250;
   if (!options.easing) options.easing = 'ease-in-out';
@@ -92,7 +92,7 @@ module.exports = function(fragments, options) {
       var oldLeft = oldElement.offsetLeft;
       var oldTop = oldElement.offsetTop;
 
-      placeholderElement = fragments.makeElementAnimatable(oldElement.cloneNode(true));
+      placeholderElement = this.fragments.makeElementAnimatable(oldElement.cloneNode(true));
       placeholderElement.style.width = oldElement.style.width = style.width;
       placeholderElement.style.height = oldElement.style.height = style.height;
       placeholderElement.style.opacity = '0';

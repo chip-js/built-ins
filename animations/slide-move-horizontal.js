@@ -1,8 +1,8 @@
 /**
  * Move items left and right in a list
  */
-module.exports = function(fragments, options) {
+module.exports = function(options) {
   if (!options) options = {};
   if (!options.property) options.property = 'width';
-  return require('./slide-move')(fragments, options);
+  return require('./slide-move')(options);
 };
