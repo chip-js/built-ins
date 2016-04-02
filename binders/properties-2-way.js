@@ -11,7 +11,7 @@ module.exports = function(specificPropertyName) {
 
     // Bind this to the given context object
     bound: function() {
-      this.twoWayObserver.bind(this.element);
+      this.twoWayObserver.bind(this.element.component || this.element);
     },
 
     unbound: function() {
@@ -30,7 +30,8 @@ module.exports = function(specificPropertyName) {
 
     updated: function(value) {
       if (!this.skipSend && value !== undefined) {
-        this.element[specificPropertyName || this.camelCase] = value;
+        var context = this.element.component || this.element;
+        context[specificPropertyName || this.camelCase] = value;
         this.skipSend = true;
         this.fragments.afterSync(function() {
           this.skipSend = false;

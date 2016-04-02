@@ -1,9 +1,10 @@
+module.exports = Component;
 var Class = require('chip-utils/class');
 var lifecycle = [ 'created', 'ready', 'attached', 'detached' ];
 
 
 function Component(element, contentTemplate) {
-  this.element = element || document.createElement(this.tagName);
+  this.element = element;
   this.created();
 
   if (this.template) {
@@ -20,6 +21,8 @@ function Component(element, contentTemplate) {
     this.element.appendChild(this._view);
     this._view.attached();
   }
+
+  this.ready();
 }
 
 Component.onExtend = function(Class, mixins) {
@@ -49,12 +52,14 @@ Class.extend(Component, {
 
   attached: function() {
     callOnMixins(this, this.mixins, 'attached', arguments);
+    this._view.attached();
     this._view.sync();
   },
 
   detached: function() {
     callOnMixins(this, this.mixins, 'detached', arguments);
     this._view.sync();
+    this._view.detached();
   }
 
 });

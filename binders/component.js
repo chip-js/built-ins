@@ -1,22 +1,25 @@
+var Component = require('./component-definition');
 var slice = Array.prototype.slice;
 
 /**
  * An element binder that binds the template on the definition to fill the contents of the element that matches. Can be
  * used as an attribute binder as well.
  */
-module.exports = function(componentLoader) {
-  var definitions = slice.call(arguments);
+module.exports = function(ComponentClass) {
+  var componentLoader;
 
-  if (typeof componentLoader === 'function') {
-    definitions.shift();
-  } else {
-    componentLoader = null;
+  if (typeof ComponentClass !== 'function') {
+    throw new TypeError('Invalid component, requires a subclass of Component or a function which will return such.');
   }
 
-  // The last definition is the most important, any others are mixins
-  var definition = definitions[definitions.length - 1];
+  if (!(ComponentClass.prototype instanceof Component)) {
+    componentLoader = ComponentClass;
+    ComponentClass = undefined;
+  }
 
   return {
+
+    priority: 20,
 
     compiled: function() {
       if (this.element.getAttribute('[unwrap]') !== null) {
@@ -30,13 +33,9 @@ module.exports = function(componentLoader) {
         this.unwrapped = false;
       }
 
-      if (definition) {
-        this.definition = definition;
-        this.definitions = definitions;
-        this.compileTemplate();
-      } else {
-        this.definitions = [];
-      }
+      this.ComponentClass = ComponentClass;
+
+      this.compileTemplate();
 
       var empty = !this.element.childNodes.length ||
                   (this.element.childNodes.length === 1 &&
@@ -53,134 +52,72 @@ module.exports = function(componentLoader) {
       this.make();
     },
 
-    updated: function(definition) {
+    updated: function(ComponentClass) {
       this.detached();
       this.unmake();
 
-      if (typeof definition === 'string' && componentLoader) {
-        definition = componentLoader.call(this, definition);
+      if (typeof ComponentClass === 'string' && componentLoader) {
+        ComponentClass = componentLoader.call(this, ComponentClass);
       }
 
-      if (Array.isArray(definition)) {
-        this.definitions = definition;
-        this.definition = definition[definition.length - 1];
-      } else if (definition) {
-        this.definitions = [definition];
-        this.definition = definition;
-      } else {
-        this.definitions = [];
-        this.definition = null;
-      }
+      this.ComponentClass = ComponentClass;
 
       this.make();
       this.attached();
     },
 
     bound: function() {
+      // Set for the component-content binder to use
       this.element._parentContext = this.context;
     },
 
     compileTemplate: function() {
-      if (this.definition.template && !this.definition.template.pool && !this.definition._compiling) {
-        // Set this before compiling so we don't get into infinite loops if there is template recursion
-        this.definition._compiling = true;
-        this.definition.template = this.fragments.createTemplate(this.definition.template);
-        delete this.definition._compiling;
+      if (!this.ComponentClass) {
+        return;
+      }
+
+      var proto = this.ComponentClass.prototype;
+      if (proto.template && !proto.template.compiled && !proto._compiling) {
+        proto._compiling = true;
+        proto.template = this.fragments.createTemplate(proto.template);
+        delete proto._compiling;
       }
     },
 
     make: function() {
-      if (!this.definition) {
+      if (!this.ComponentClass) {
         return;
       }
 
       this.compileTemplate();
 
-      if (this.definition.template) {
-        this.componentView = this.definition.template.createView();
-        if(this.unwrapped) {
-          var parent = this.element.parentNode;
-          parent.insertBefore(this.componentView, this.element.nextSibling);
-        } else {
-          this.element.appendChild(this.componentView);
-        }
-        if (this.contentTemplate) {
-          this.element._componentContent = this.contentTemplate;
-        }
-      } else if (this.contentTemplate) {
-        this.content = this.contentTemplate.createView();
-        this.element.appendChild(this.content);
-      }
-
-      this.definitions.forEach(function(definition) {
-        Object.getOwnPropertyNames(definition).forEach(function(key) {
-          Object.defineProperty(this.element, key, Object.getOwnPropertyDescriptor(definition, key));
-        }, this);
-      }, this);
-
-      // Don't call created until after all definitions have been copied over
-      this.definitions.forEach(function(definition) {
-        if (typeof definition.created === 'function') {
-          definition.created.call(this.element);
-        }
-      }, this);
+      this.component = new this.ComponentClass(this.element, this.contentTemplate);
+      this.element.component = this.component;
     },
 
     unmake: function() {
-      if (!this.definition) {
+      if (!this.ComponentClass) {
         return;
       }
 
-      if (this.content) {
-        this.content.dispose();
-        this.content = null;
+      if (this.component) {
+        this.component.componentView.dispose();
+        this.component.element = null;
+        this.element.component = null;
+        this.component = null;
       }
-
-      if (this.componentView) {
-        this.componentView.dispose();
-        this.componentView = null;
-      }
-
-      this.definitions.forEach(function(definition) {
-        Object.keys(definition).forEach(function(key) {
-          delete this.element[key];
-        }, this);
-      }, this);
     },
 
     attached: function() {
-      if (!this.definition) {
-        return;
+      if (this.component) {
+        this.component.attached();
       }
-
-      if (this.componentView) this.componentView.bind(this.element);
-      if (this.content) this.content.bind(this.context);
-
-      this.definitions.forEach(function(definition) {
-        if (typeof definition.attached === 'function') {
-          definition.attached.call(this.element);
-          this.fragments.sync();
-        }
-      }, this);
-
-      if (this.componentView) this.componentView.attached();
     },
 
     detached: function() {
-      if (!this.definition) {
-        return;
+      if (this.component) {
+        this.component.detached();
       }
-
-      if (this.content) this.content.unbind();
-      if (this.componentView) this.componentView.unbind();
-
-      this.definitions.forEach(function(definition) {
-        if (typeof definition.detached === 'function') {
-          definition.detached.call(this.element);
-        }
-      }, this);
-
-      if (this.componentView) this.componentView.detached();
     }
 
   };
