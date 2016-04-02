@@ -27,6 +27,7 @@
     "docs": "docco -o docs */*.js"
   },
   "dependencies": {
-    "differences-js": "0.1.0"
+    "chip-utils": "^0.2.2",
+    "differences-js": "^0.1.0"
   }
 }
