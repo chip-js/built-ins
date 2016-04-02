@@ -17,9 +17,7 @@ function Component(element, contentTemplate) {
   }
 
   if (this._view) {
-    this._view.bind(this);
     this.element.appendChild(this._view);
-    this._view.attached();
   }
 
   this.ready();
@@ -51,6 +49,7 @@ Class.extend(Component, {
   },
 
   attached: function() {
+    this._view.bind(this);
     callOnMixins(this, this.mixins, 'attached', arguments);
     this._view.attached();
     this._view.sync();
@@ -60,6 +59,7 @@ Class.extend(Component, {
     callOnMixins(this, this.mixins, 'detached', arguments);
     this._view.sync();
     this._view.detached();
+    this._view.unbind();
   }
 
 });
