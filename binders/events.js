@@ -43,8 +43,13 @@ module.exports = function(specificEventName) {
       this.priorElementDescriptor = priorElementDescriptor;
       this.lastContext = this.context;
 
+      // DEPRECATE
       this.context.event = event;
       this.context.element = this.element;
+      // END DEPRECATE
+
+      this.context.$event = event;
+      this.context.$element = this.element;
     },
 
     clearEvent: function() {
@@ -67,6 +72,8 @@ module.exports = function(specificEventName) {
         delete context.element;
       }
 
+      delete context.$event;
+      delete context.$element;
       this.event = null;
       this.lastContext = null;
     }
