@@ -1,11 +1,10 @@
 module.exports = Component;
 var Class = require('chip-utils/class');
-var lifecycle = [ 'created', 'ready', 'attached', 'detached' ];
+var lifecycle = [ 'created', 'bound', 'attached', 'unbound', 'detached' ];
 
 
 function Component(element, contentTemplate) {
   this.element = element;
-  this.created();
 
   if (this.template) {
     this._view = this.template.createView();
@@ -20,7 +19,7 @@ function Component(element, contentTemplate) {
     this.element.appendChild(this._view);
   }
 
-  this.ready();
+  this.created();
 }
 
 Component.onExtend = function(Class, mixins) {
@@ -36,7 +35,7 @@ Component.onExtend = function(Class, mixins) {
 Class.extend(Component, {
   mixins: [],
 
-  get componentView() {
+  get view() {
     return this._view;
   },
 
@@ -44,22 +43,24 @@ Class.extend(Component, {
     callOnMixins(this, this.mixins, 'created', arguments);
   },
 
-  ready: function() {
-    callOnMixins(this, this.mixins, 'ready', arguments);
+  bound: function() {
+    callOnMixins(this, this.mixins, 'bound', arguments);
+    this._view.bind(this);
   },
 
   attached: function() {
-    this._view.bind(this);
     callOnMixins(this, this.mixins, 'attached', arguments);
     this._view.attached();
-    this._view.sync();
+  },
+
+  unbound: function() {
+    callOnMixins(this, this.mixins, 'unbound', arguments);
+    this._view.unbind();
   },
 
   detached: function() {
     callOnMixins(this, this.mixins, 'detached', arguments);
-    this._view.sync();
     this._view.detached();
-    this._view.unbind();
   }
 
 });

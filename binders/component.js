@@ -19,8 +19,6 @@ module.exports = function(ComponentClass) {
 
   return {
 
-    priority: 20,
-
     compiled: function() {
       if (this.element.getAttribute('[unwrap]') !== null) {
         var parent = this.element.parentNode;
@@ -53,6 +51,7 @@ module.exports = function(ComponentClass) {
     },
 
     updated: function(ComponentClass) {
+      this.unbound();
       this.detached();
       this.unmake();
 
@@ -63,12 +62,34 @@ module.exports = function(ComponentClass) {
       this.ComponentClass = ComponentClass;
 
       this.make();
+      this.bound();
       this.attached();
     },
 
     bound: function() {
       // Set for the component-content binder to use
       this.element._parentContext = this.context;
+      if (this.component) {
+        this.component.bound();
+      }
+    },
+
+    unbound: function() {
+      if (this.component) {
+        this.component.unbound();
+      }
+    },
+
+    attached: function() {
+      if (this.component) {
+        this.component.attached();
+      }
+    },
+
+    detached: function() {
+      if (this.component) {
+        this.component.detached();
+      }
     },
 
     compileTemplate: function() {
@@ -101,22 +122,10 @@ module.exports = function(ComponentClass) {
       }
 
       if (this.component) {
-        this.component.componentView.dispose();
+        this.component.view.dispose();
         this.component.element = null;
         this.element.component = null;
         this.component = null;
-      }
-    },
-
-    attached: function() {
-      if (this.component) {
-        this.component.attached();
-      }
-    },
-
-    detached: function() {
-      if (this.component) {
-        this.component.detached();
       }
     }
 
