@@ -4,16 +4,10 @@
 module.exports = function() {
   return {
 
-    bound: function() {
+    attached: function() {
       if (!this.expression || this.observer.get()) {
-        this.focus();
-      }
-    },
-
-    focus: function() {
-      this.fragments.afterSync(function() {
         this.element.focus();
-      }.bind(this));
+      }
     }
 
   };
