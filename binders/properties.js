@@ -6,8 +6,11 @@ module.exports = function(specificPropertyName) {
     priority: 10,
 
     updated: function(value) {
-      var context = this.element.component || this.element;
-      context[specificPropertyName || this.camelCase] = value;
+      var properties = this.element._properties || (this.element._properties = {});
+      properties[specificPropertyName || this.camelCase] = value;
+      if (this.element.component) {
+        this.element.component[specificPropertyName || this.camelCase] = value;
+      }
     }
   };
 };
