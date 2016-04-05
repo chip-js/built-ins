@@ -114,6 +114,14 @@ module.exports = function(ComponentClass) {
 
       this.component = new this.ComponentClass(this.element, this.contentTemplate);
       this.element.component = this.component;
+      this.element.dispatchEvent(new Event('componentized'));
+
+      var properties = this.element._properties;
+      if (properties) {
+        Object.keys(properties).forEach(function(key) {
+          this.component[key] = properties[key];
+        }, this);
+      }
     },
 
     unmake: function() {
