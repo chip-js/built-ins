@@ -308,6 +308,6 @@ module.exports = function(fragments) {
    * </div>
    * ```
    */
-  fragments.registerAttribute('repeat', require('./repeat')());
+  fragments.registerAttribute('repeat', require('./repeat')('repeat-by'));
 
 };
