@@ -5,17 +5,22 @@ var diff = require('differences-js');
  * `itemName in expr` where `itemName` is the name each item inside the array will be referenced by within bindings
  * inside the element.
  */
-module.exports = function() {
+module.exports = function(compareByAttribute) {
   return {
     animated: true,
     priority: 100,
 
     compiled: function() {
+      if (this.element.hasAttribute(compareByAttribute)) {
+        this.compareBy = this.element.getAttribute(compareByAttribute);
+        this.element.removeAttribute(compareByAttribute);
+      }
       var parent = this.element.parentNode;
       var placeholder = document.createTextNode('');
       parent.insertBefore(placeholder, this.element);
       this.template = this.fragments.createTemplate(this.element);
       this.element = placeholder;
+
 
       var parts = this.expression.split(/\s+in\s+|\s+of\s+/);
       this.expression = parts.pop();
@@ -30,6 +35,9 @@ module.exports = function() {
     created: function() {
       this.views = [];
       this.observer.getChangeRecords = true;
+      this.observer.compareBy = this.compareBy;
+      this.observer.compareByName = this.valueName;
+      this.observer.compareByIndex = this.keyName;
     },
 
     attached: function() {
@@ -59,10 +67,11 @@ module.exports = function() {
           this.updateChanges(value, changes);
         }
 
-        // Keep the array indexesq updated as the array changes
-        if (Array.isArray(value) && this.keyName) {
+        // Keep the items updated as the array changes
+        if (changes && this.valueName) {
           this.views.forEach(function(view, i) {
-            view.context[this.keyName] = i;
+            if (this.keyName) view.context[this.keyName] = key;
+            view.context[this.valueName] = value[i];
           }, this);
         }
       }
