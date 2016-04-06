@@ -11,15 +11,15 @@ module.exports = function(compareByAttribute) {
     priority: 100,
 
     compiled: function() {
+      if (this.element.hasAttribute(compareByAttribute)) {
+        this.compareBy = this.element.getAttribute(compareByAttribute);
+        this.element.removeAttribute(compareByAttribute);
+      }
       var parent = this.element.parentNode;
       var placeholder = document.createTextNode('');
       parent.insertBefore(placeholder, this.element);
       this.template = this.fragments.createTemplate(this.element);
       this.element = placeholder;
-      if (this.element.hasAttribute(compareByAttribute)) {
-        this.compareBy = this.element.getAttribute(compareByAttribute);
-        this.element.removeAttribute(compareByAttribute);
-      }
 
 
       var parts = this.expression.split(/\s+in\s+|\s+of\s+/);
