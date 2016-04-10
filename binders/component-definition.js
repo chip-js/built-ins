@@ -22,6 +22,8 @@ function Component(element, contentTemplate) {
   this.created();
 }
 
+Component.isComponent = true;
+
 Component.onExtend = function(Class, mixins) {
   Class.prototype.mixins = Class.prototype.mixins.concat(mixins);
 
