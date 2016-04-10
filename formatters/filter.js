@@ -2,11 +2,18 @@
  * Filters an array by the given filter function(s), may provide a function or an array or an object with filtering
  * functions.
  */
-module.exports = function(value, filterFunc) {
+module.exports = function(value, filterFunc, value) {
   if (!Array.isArray(value)) {
     return [];
   } else if (!filterFunc) {
     return value;
+  }
+
+  if (typeof filterFunc === 'string' && arguments.length > 2) {
+    var key = filterFunc;
+    filterFunc = function(item) {
+      return item && item[key] === value;
+    };
   }
 
   if (typeof filterFunc === 'function') {
