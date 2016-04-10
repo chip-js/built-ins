@@ -12,7 +12,7 @@ module.exports = function(ComponentClass) {
     throw new TypeError('Invalid component, requires a subclass of Component or a function which will return such.');
   }
 
-  if (!(ComponentClass.prototype instanceof Component)) {
+  if (!ComponentClass.isComponent) {
     componentLoader = ComponentClass;
     ComponentClass = undefined;
   }
