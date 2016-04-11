@@ -2,7 +2,7 @@
  * Filters an array by the given filter function(s), may provide a function or an array or an object with filtering
  * functions.
  */
-module.exports = function(value, filterFunc, value) {
+module.exports = function(value, filterFunc, testValue) {
   if (!Array.isArray(value)) {
     return [];
   } else if (!filterFunc) {
@@ -12,7 +12,7 @@ module.exports = function(value, filterFunc, value) {
   if (typeof filterFunc === 'string' && arguments.length > 2) {
     var key = filterFunc;
     filterFunc = function(item) {
-      return item && item[key] === value;
+      return item && item[key] === testValue;
     };
   }
 
