@@ -3,7 +3,7 @@ var Class = require('chip-utils/class');
 var lifecycle = [ 'created', 'bound', 'attached', 'unbound', 'detached' ];
 
 
-function Component(element, contentTemplate) {
+function Component(element, contentTemplate, unwrap) {
   this.element = element;
 
   if (this.template) {
@@ -16,7 +16,11 @@ function Component(element, contentTemplate) {
   }
 
   if (this._view) {
-    this.element.appendChild(this._view);
+    if (unwrap) {
+      this.element.parentNode.insertBefore(this._view, this.element.nextSibling);
+    } else {
+      this.element.appendChild(this._view);
+    }
   }
 
   this.created();

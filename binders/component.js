@@ -112,7 +112,7 @@ module.exports = function(ComponentClass) {
 
       this.compileTemplate();
 
-      this.component = new this.ComponentClass(this.element, this.contentTemplate);
+      this.component = new this.ComponentClass(this.element, this.contentTemplate, this.unwrapped);
       this.element.component = this.component;
       this.element.dispatchEvent(new Event('componentized'));
 
