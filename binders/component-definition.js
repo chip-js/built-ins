@@ -9,7 +9,7 @@ function Component(element, contentTemplate, unwrap) {
   if (this.template) {
     this._view = this.template.createView();
     if (contentTemplate) {
-      this.element._componentContent = contentTemplate;
+      this._componentContent = contentTemplate;
     }
   } else if (contentTemplate) {
     this._view = contentTemplate.createView();

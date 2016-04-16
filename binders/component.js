@@ -46,10 +46,6 @@ module.exports = function(ComponentClass) {
       }
     },
 
-    created: function() {
-      this.make();
-    },
-
     updated: function(ComponentClass) {
       this.unbound();
       this.detached();
@@ -69,6 +65,12 @@ module.exports = function(ComponentClass) {
     bound: function() {
       // Set for the component-content binder to use
       this.element._parentContext = this.context;
+
+      if (!this.component) {
+        // If not already a component, make it
+        this.make();
+      }
+
       if (this.component) {
         this.component.bound();
       }
@@ -77,6 +79,10 @@ module.exports = function(ComponentClass) {
     unbound: function() {
       if (this.component) {
         this.component.unbound();
+      }
+      if (!this.view._attached) {
+        // If removed and unbound, unmake it
+        this.unmake();
       }
     },
 
@@ -89,6 +95,10 @@ module.exports = function(ComponentClass) {
     detached: function() {
       if (this.component) {
         this.component.detached();
+      }
+      if (!this.context) {
+        // If removed and unbound, unmake it
+        this.unmake();
       }
     },
 
@@ -125,16 +135,14 @@ module.exports = function(ComponentClass) {
     },
 
     unmake: function() {
-      if (!this.ComponentClass) {
+      if (!this.component) {
         return;
       }
 
-      if (this.component) {
-        this.component.view.dispose();
-        this.component.element = null;
-        this.element.component = null;
-        this.component = null;
-      }
+      this.component.view.dispose();
+      this.component.element = null;
+      this.element.component = null;
+      this.component = null;
     }
 
   };
