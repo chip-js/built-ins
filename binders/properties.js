@@ -6,6 +6,11 @@ module.exports = function(specificPropertyName) {
     priority: 10,
 
     updated: function(value) {
+      if (!this.context) {
+        // Don't unset properties on components getting ready to be disposed of
+        return;
+      }
+
       var properties = this.element._properties || (this.element._properties = {});
       properties[specificPropertyName || this.camelCase] = value;
       if (this.element.component) {
