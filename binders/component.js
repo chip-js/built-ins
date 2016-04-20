@@ -48,7 +48,9 @@ module.exports = function(ComponentClass) {
 
     updated: function(ComponentClass) {
       this.unbound();
-      this.detached();
+      if (this.view && this.view._attached) {
+        this.detached();
+      }
       this.unmake();
 
       if (typeof ComponentClass === 'string' && componentLoader) {
@@ -59,7 +61,9 @@ module.exports = function(ComponentClass) {
 
       this.make();
       this.bound();
-      this.attached();
+      if (this.view && this.view._attached) {
+        this.attached();
+      }
     },
 
     bound: function() {
