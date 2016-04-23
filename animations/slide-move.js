@@ -91,6 +91,13 @@ module.exports = function(options) {
       var marginOffsetTop = -parseInt(style.marginTop);
       var oldLeft = oldElement.offsetLeft;
       var oldTop = oldElement.offsetTop;
+      var newLeft = newElement.offsetLeft;
+      var newTop = newElement.offsetTop;
+      if (this.options.property === 'height' && oldTop < newTop) {
+        newTop -= oldElement.offsetHeight;
+      } else if (this.options.property === 'width' && oldLeft < newLeft) {
+        newLeft -= oldElement.offsetWidth;
+      }
 
       placeholderElement = this.fragments.makeElementAnimatable(oldElement.cloneNode(true));
       placeholderElement.style.width = oldElement.style.width = style.width;
@@ -99,15 +106,18 @@ module.exports = function(options) {
 
       oldElement.style.position = 'absolute';
       oldElement.style.zIndex = 1000;
+      oldElement.classList.remove('animate-out');
+      oldElement.classList.add('animate-move');
       parent.insertBefore(placeholderElement, oldElement);
       newElement.style.opacity = '0';
 
       oldElement.animate([
         { top: oldTop + marginOffsetTop + 'px', left: oldLeft + marginOffsetLeft + 'px' },
-        { top: newElement.offsetTop + marginOffsetTop + 'px', left: newElement.offsetLeft + marginOffsetLeft + 'px' }
+        { top: newTop + marginOffsetTop + 'px', left: newLeft + marginOffsetLeft + 'px' }
       ], this.options).onfinish = function() {
         placeholderElement.remove();
         origStyle ? oldElement.setAttribute('style', origStyle) : oldElement.removeAttribute('style');
+        oldElement.classList.remove('animate-move');
         newElement.style.opacity = '';
       };
 
