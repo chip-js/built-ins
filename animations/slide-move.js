@@ -55,7 +55,7 @@ module.exports = function(options) {
         if (newElement && newElement.parentNode === element.parentNode) {
           // This item is being removed in one place and added into another. Make it look like its moving by making both
           // elements not visible and having a clone move above the items to the new location.
-          element = this.animateMove(element, newElement);
+          this.animateMove(element, newElement);
         }
       }
 
@@ -76,7 +76,7 @@ module.exports = function(options) {
     },
 
     animateMove: function(oldElement, newElement) {
-      var placeholderElement;
+      var moveElement, options = this.options;
       var parent = newElement.parentNode;
       if (!parent.__slideMoveHandled) {
         parent.__slideMoveHandled = true;
@@ -91,37 +91,39 @@ module.exports = function(options) {
       var marginOffsetTop = -parseInt(style.marginTop);
       var oldLeft = oldElement.offsetLeft;
       var oldTop = oldElement.offsetTop;
-      var newLeft = newElement.offsetLeft;
-      var newTop = newElement.offsetTop;
-      if (this.options.property === 'height' && oldTop < newTop) {
-        newTop -= oldElement.offsetHeight;
-      } else if (this.options.property === 'width' && oldLeft < newLeft) {
-        newLeft -= oldElement.offsetWidth;
-      }
+      moveElement = this.fragments.makeElementAnimatable(oldElement.cloneNode(true));
+      var savePositionElem = document.createTextNode('');
+      parent.replaceChild(savePositionElem, oldElement);
 
-      placeholderElement = this.fragments.makeElementAnimatable(oldElement.cloneNode(true));
-      placeholderElement.style.width = oldElement.style.width = style.width;
-      placeholderElement.style.height = oldElement.style.height = style.height;
-      placeholderElement.style.opacity = '0';
+      // Ensure all the moves have been processed
+      Promise.resolve().then(function() {
+        var newLeft = newElement.offsetLeft;
+        var newTop = newElement.offsetTop;
 
-      oldElement.style.position = 'absolute';
-      oldElement.style.zIndex = 1000;
-      oldElement.classList.remove('animate-out');
-      oldElement.classList.add('animate-move');
-      parent.insertBefore(placeholderElement, oldElement);
-      newElement.style.opacity = '0';
+        // Again, ensure all the new positions have been set before adding things back in
+        Promise.resolve().then(function() {
+          parent.replaceChild(oldElement, savePositionElem);
+          oldElement.style.opacity = '0';
+          newElement.style.opacity = '0';
 
-      oldElement.animate([
-        { top: oldTop + marginOffsetTop + 'px', left: oldLeft + marginOffsetLeft + 'px' },
-        { top: newTop + marginOffsetTop + 'px', left: newLeft + marginOffsetLeft + 'px' }
-      ], this.options).onfinish = function() {
-        placeholderElement.remove();
-        origStyle ? oldElement.setAttribute('style', origStyle) : oldElement.removeAttribute('style');
-        oldElement.classList.remove('animate-move');
-        newElement.style.opacity = '';
-      };
+          moveElement.style.width = style.width;
+          moveElement.style.height = style.height;
+          moveElement.style.position = 'absolute';
+          moveElement.classList.remove('animate-out');
+          moveElement.classList.add('animate-move');
+          // Put at the end so it appears on top as it moves (when other elements have position: relative)
+          parent.appendChild(moveElement);
 
-      return placeholderElement;
+          moveElement.animate([
+            { top: oldTop + marginOffsetTop + 'px', left: oldLeft + marginOffsetLeft + 'px' },
+            { top: newTop + marginOffsetTop + 'px', left: newLeft + marginOffsetLeft + 'px' }
+          ], options).onfinish = function() {
+            moveElement.remove();
+            oldElement.style.opacity = '';
+            newElement.style.opacity = '';
+          };
+        });
+      });
     }
   };
 };
