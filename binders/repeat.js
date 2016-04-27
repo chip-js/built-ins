@@ -65,15 +65,18 @@ module.exports = function(compareByAttribute) {
           this.updateChangesAnimated(value, changes);
         } else {
           this.updateChanges(value, changes);
+          this.updateViewContexts(value);
         }
+      }
+    },
 
-        // Keep the items updated as the array changes
-        if (changes && this.valueName) {
-          this.views.forEach(function(view, i) {
-            if (this.keyName) view.context[this.keyName] = key;
-            view.context[this.valueName] = value[i];
-          }, this);
-        }
+    updateViewContexts: function(value) {
+      // Keep the items updated as the array changes
+      if (this.valueName) {
+        this.views.forEach(function(view, i) {
+          if (this.keyName) view.context[this.keyName] = key;
+          view.context[this.valueName] = value[i];
+        }, this);
       }
     },
 
@@ -169,12 +172,13 @@ module.exports = function(compareByAttribute) {
       var animatingValue = value.slice();
       var allAdded = [];
       var allRemoved = [];
+      var doneCount = 0;
       this.animating = true;
 
       // Run updates which occured while this was animating.
-      function whenDone() {
+      var whenDone = function() {
         // The last animation finished will run this
-        if (--whenDone.count !== 0) return;
+        if (--doneCount !== 0) return;
 
         allRemoved.forEach(this.removeView);
 
@@ -182,12 +186,14 @@ module.exports = function(compareByAttribute) {
           this.animating = false;
           if (this.valueWhileAnimating) {
             var changes = diff.arrays(this.valueWhileAnimating, animatingValue);
-            this.updateChangesAnimated(this.valueWhileAnimating, changes);
-            this.valueWhileAnimating = null;
+            if (changes.length) {
+              var value = this.valueWhileAnimating;
+              this.valueWhileAnimating = null;
+              this.updateChangesAnimated(value, changes);
+            }
           }
         }
-      }
-      whenDone.count = 0;
+      };
 
       changes.forEach(function(splice) {
         var addedViews = [];
@@ -215,15 +221,17 @@ module.exports = function(compareByAttribute) {
 
 
       allAdded.forEach(function(view) {
-        whenDone.count++;
+        doneCount++;
         this.animateIn(view, whenDone);
       }, this);
 
       allRemoved.forEach(function(view) {
-        whenDone.count++;
+        doneCount++;
         view.unbind();
         this.animateOut(view, whenDone);
       }, this);
+
+      this.updateViewContexts(value);
     },
 
     unbound: function() {
