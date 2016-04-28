@@ -1,6 +1,6 @@
 {
   "name": "fragments-built-ins",
-  "version": "0.6.23",
+  "version": "0.6.24",
   "description": "Built-in binders, formatters, and animations for fragments.js-based frameworks.",
   "keywords": [
     "fragments-js"
