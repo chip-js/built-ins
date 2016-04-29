@@ -46,6 +46,10 @@ module.exports = function(ComponentClass) {
       }
     },
 
+    created: function() {
+      this.element.component = null;
+    },
+
     updated: function(ComponentClass) {
       this.unbound();
       if (this.view && this.view._attached) {

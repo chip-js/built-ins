@@ -5,17 +5,27 @@ module.exports = function(specificPropertyName) {
   return {
     priority: 10,
 
-    updated: function(value) {
-      if (!this.context) {
-        // Don't unset properties on components getting ready to be disposed of
-        return;
-      }
+    created: function() {
+      this.propertyName = specificPropertyName || this.camelCase;
+    },
 
-      var properties = this.element._properties || (this.element._properties = {});
-      properties[specificPropertyName || this.camelCase] = value;
-      if (this.element.component) {
-        this.element.component[specificPropertyName || this.camelCase] = value;
+    updated: function(value) {
+
+      if (this.element.hasOwnProperty('component')) {
+        var properties = this.element._properties || (this.element._properties = {});
+        properties[this.propertyName] = value;
+
+        if (this.context && this.element.component) {
+          // Don't unset properties on components getting ready to be disposed of
+          this.element.component[this.propertyName] = value;
+        }
+      } else if (this.context) {
+        this.context[this.propertyName] = value;
       }
+    },
+
+    unbound: function() {
+      this.context[this.propertyName] = undefined;
     }
   };
 };
