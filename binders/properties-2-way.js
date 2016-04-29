@@ -6,7 +6,8 @@ module.exports = function(specificPropertyName) {
     priority: 10,
 
     created: function() {
-      this.twoWayObserver = this.observe(specificPropertyName || this.camelCase, this.sendUpdate, this);
+      this.propertyName = this.propertyName;
+      this.twoWayObserver = this.observe(this.propertyName, this.sendUpdate, this);
       this.element.addEventListener('componentized', function() {
         this.twoWayObserver.bind(this.element.component);
       }.bind(this));
@@ -19,7 +20,7 @@ module.exports = function(specificPropertyName) {
     sendUpdate: function(value) {
       if (!this.skipSend) {
         var properties = this.element._properties || (this.element._properties = {});
-        properties[specificPropertyName || this.camelCase] = value;
+        properties[this.propertyName] = value;
         this.observer.set(value);
         this.skipSend = true;
         this.fragments.afterSync(function() {
@@ -31,9 +32,9 @@ module.exports = function(specificPropertyName) {
     updated: function(value) {
       if (!this.skipSend && value !== undefined) {
         var properties = this.element._properties || (this.element._properties = {});
-        properties[specificPropertyName || this.camelCase] = value;
+        properties[this.propertyName] = value;
         if (this.element.component) {
-          this.element.component[specificPropertyName || this.camelCase] = value;
+          this.element.component[this.propertyName] = value;
         }
         this.skipSend = true;
         this.fragments.afterSync(function() {
