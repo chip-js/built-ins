@@ -7,6 +7,7 @@ module.exports = function(fragments) {
   }
 
   fragments.registerFormatter('addQuery', require('./add-query'));
+  fragments.registerFormatter('at', require('./at'));
   fragments.registerFormatter('autolink', require('./autolink'));
   fragments.registerFormatter('bool', require('./bool'));
   fragments.registerFormatter('br', require('./br'));
@@ -14,11 +15,13 @@ module.exports = function(fragments) {
   fragments.registerFormatter('date', require('./date'));
   fragments.registerFormatter('escape', require('./escape'));
   fragments.registerFormatter('filter', require('./filter'));
+  fragments.registerFormatter('first', require('./first'));
   fragments.registerFormatter('float', require('./float'));
   fragments.registerFormatter('format', require('./format'));
   fragments.registerFormatter('int', require('./int'));
   fragments.registerFormatter('json', require('./json'));
   fragments.registerFormatter('keys', require('./keys'));
+  fragments.registerFormatter('last', require('./last'));
   fragments.registerFormatter('limit', require('./limit'));
   fragments.registerFormatter('log', require('./log'));
   fragments.registerFormatter('lower', require('./lower'));
