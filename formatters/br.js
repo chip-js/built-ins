@@ -1,13 +1,11 @@
-var escapeHTML = require('./escape');
-
 /**
- * HTML escapes content adding <br> tags in place of newlines characters.
+ * Adds <br> tags in place of newlines characters.
  */
 module.exports = function(value, setter) {
   if (setter) {
-    return escapeHTML(value, setter);
+    return value.replace(/<br>\r?\n?/g, '\n');
   } else {
     var lines = (value || '').split(/\r?\n/);
-    return lines.map(escapeHTML).join('<br>\n');
+    return lines.join('<br>\n');
   }
 };

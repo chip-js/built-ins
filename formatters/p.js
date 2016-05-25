@@ -1,14 +1,13 @@
-var escapeHTML = require('./escape');
-
 /**
- * HTML escapes content wrapping lines into paragraphs (in <p> tags).
+ * Wraps lines into paragraphs (in <p> tags).
  */
 module.exports = function(value, setter) {
   if (setter) {
-    return escapeHTML(value, setter);
+    return value.replace(/<p>\n?<\/p>/g, '\n').replace(/<p>|<\/p>/g, '');
   } else {
-    var lines = (value || '').split(/\r?\n/);
-    var escaped = lines.map(function(line) { return escapeHTML(line) || '<br>'; });
-    return '<p>' + escaped.join('</p>\n<p>') + '</p>';
+    var lines = (value || '').split(/\r?\n/)
+                // empty paragraphs will collapse if they don't have any content, insert a br
+                .map(function(line) { return line || '<br>'; });
+    return '<p>' + lines.join('</p>\n<p>') + '</p>';
   }
 };
