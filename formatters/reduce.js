@@ -2,7 +2,7 @@
  * Adds a formatter to reduce an array or value by the given reduce function
  */
 module.exports = function(value, reduceFunc, initialValue) {
-  if (value == null || typeof mapFunc !== 'function') {
+  if (value == null || typeof reduceFunc !== 'function') {
     return value;
   }
   if (Array.isArray(value)) {
