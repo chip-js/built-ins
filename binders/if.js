@@ -26,11 +26,11 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
         var next = node.nextElementSibling;
         var expression;
         if (node.hasAttribute(elseIfAttrName)) {
-          expression = this.fragments.codifyExpression('attribute', node.getAttribute(elseIfAttrName));
+          expression = this.fragments.codifyExpression('attribute', node.getAttribute(elseIfAttrName), true);
           expressions.push(wrapIfExp(expression, false));
           node.removeAttribute(elseIfAttrName);
         } else if (node.hasAttribute(elseUnlessAttrName)) {
-          expression = this.fragments.codifyExpression('attribute', node.getAttribute(elseUnlessAttrName));
+          expression = this.fragments.codifyExpression('attribute', node.getAttribute(elseUnlessAttrName), true);
           expressions.push(wrapIfExp(expression, true));
           node.removeAttribute(elseUnlessAttrName);
         } else if (node.hasAttribute(elseAttrName)) {
