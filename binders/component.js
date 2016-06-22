@@ -5,7 +5,7 @@ var slice = Array.prototype.slice;
  * An element binder that binds the template on the definition to fill the contents of the element that matches. Can be
  * used as an attribute binder as well.
  */
-module.exports = function(ComponentClass) {
+module.exports = function(ComponentClass, unwrapAttribute) {
   var componentLoader;
 
   if (typeof ComponentClass !== 'function') {
@@ -20,7 +20,7 @@ module.exports = function(ComponentClass) {
   return {
 
     compiled: function() {
-      if (this.element.getAttribute('[unwrap]') !== null) {
+      if (unwrapAttribute && this.element.getAttribute(unwrapAttribute) !== null) {
         var parent = this.element.parentNode;
         var placeholder = document.createTextNode('');
         parent.insertBefore(placeholder, this.element);

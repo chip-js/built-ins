@@ -12,7 +12,7 @@ module.exports = function(compareByAttribute) {
 
     compiled: function() {
       if (this.element.hasAttribute(compareByAttribute)) {
-        this.compareBy = this.fragments.codifyExpression('attribute', this.element.getAttribute(compareByAttribute));
+        this.compareBy = this.fragments.codifyExpression('attribute', this.element.getAttribute(compareByAttribute), true);
         this.element.removeAttribute(compareByAttribute);
       }
       var parent = this.element.parentNode;
