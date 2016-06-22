@@ -22,10 +22,6 @@ module.exports = function(specificPropertyName) {
       } else if (this.context) {
         this.context[this.propertyName] = value;
       }
-    },
-
-    unbound: function() {
-      this.context[this.propertyName] = undefined;
     }
   };
 };
