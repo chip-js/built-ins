@@ -27,6 +27,10 @@ module.exports = function(specificEventName) {
         var priorElement = Object.getOwnPropertyDescriptor(_this.context, 'element');
         _this.setEvent(event, priorEvent, priorElement);
 
+        // queue up a sync to run afer this event is handled (we assume most events will alter the state of the
+        // application, otherwise there is no need to listen for them)
+        _this.fragments.sync();
+
         // Let an event binder make the function call with its own arguments
         _this.observer.get();
 
