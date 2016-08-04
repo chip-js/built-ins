@@ -16,6 +16,7 @@ module.exports = function(fragments) {
   fragments.registerFormatter('escape', require('./escape'));
   fragments.registerFormatter('filter', require('./filter'));
   fragments.registerFormatter('first', require('./first'));
+  fragments.registerFormatter('flatten', require('./flatten'));
   fragments.registerFormatter('float', require('./float'));
   fragments.registerFormatter('format', require('./format'));
   fragments.registerFormatter('int', require('./int'));
@@ -34,4 +35,5 @@ module.exports = function(fragments) {
   fragments.registerFormatter('sort', require('./sort'));
   fragments.registerFormatter('time', require('./time'));
   fragments.registerFormatter('upper', require('./upper'));
+  fragments.registerFormatter('values', require('./values'));
 };
