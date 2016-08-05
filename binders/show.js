@@ -49,9 +49,14 @@ module.exports = function(isHide) {
         this.element.style.display = '';
         this.animateIn(this.element, onFinish);
       } else {
+        this.hiding = true;
         this.animateOut(this.element, function() {
-          this.element.style.display = 'none';
-          onFinish.call(this);
+          var cancel = this.cancelHide;
+          this.cancelHide = this.hiding = false;
+          if (!cancel) {
+            this.element.style.display = 'none';
+            onFinish.call(this);
+          }
         });
       }
     },
@@ -61,6 +66,9 @@ module.exports = function(isHide) {
     },
 
     unbound: function() {
+      if (this.hiding === true) {
+        this.cancelHide = true;
+      }
       this.element.style.display = '';
       this.lastValue = null;
       this.animating = false;
