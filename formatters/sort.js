@@ -13,6 +13,9 @@ module.exports = function(value, sortFunc, dir) {
     dir2 = (dir2 === 'desc') ? -1 : 1;
     dir = dir || dir2;
     sortFunc = function(a, b) {
+      if (a && !b) return dir;
+      if (!a && b) return -dir;
+      if (!a && !b) return 0;
       if (a[prop] > b[prop]) return dir;
       if (a[prop] < b[prop]) return -dir;
       return 0;
