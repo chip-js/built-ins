@@ -88,10 +88,13 @@ module.exports = function(ComponentClass, unwrapAttribute) {
       if (this.component) {
         this.component.unbound();
       }
+
       if (this.view && !this.view._attached) {
         // If removed and unbound, unmake it
         this.unmake();
       }
+
+      delete this.element._parentContext;
     },
 
     attached: function() {

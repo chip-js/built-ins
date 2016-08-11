@@ -22,13 +22,19 @@ module.exports = function() {
       var template = this.context._componentContent || this.defaultContent;
       if (template) {
         this.content = template.createView();
-        this.content.bind(this.context);
+        this.content.bind(this.context.element._parentContext);
         this.element.appendChild(this.content);
         this.content.attached();
       }
     },
 
     unbound: function() {
+      if (this.content) {
+        this.content.unbind();
+      }
+    },
+
+    disposed: function() {
       if (this.content) {
         this.content.dispose();
         this.content = null;
