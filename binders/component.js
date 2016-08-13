@@ -133,7 +133,8 @@ module.exports = function(ComponentClass, unwrapAttribute) {
 
       this.compileTemplate();
 
-      this.component = new this.ComponentClass(this.element, this.contentTemplate, this.unwrapped);
+      var observations = this.fragments.observations;
+      this.component = new this.ComponentClass(observations, this.element, this.contentTemplate, this.unwrapped);
       this.element.component = this.component;
 
       // Expose public properties onto the element

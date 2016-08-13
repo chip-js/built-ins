@@ -1,9 +1,32 @@
 module.exports = Component;
-var Class = require('chip-utils/class');
+var ObservableHash = require('observations-js').ObservableHash;
 var lifecycle = [ 'created', 'bound', 'attached', 'unbound', 'detached' ];
 
 
-function Component(element, contentTemplate, unwrap) {
+function Component(observations, element, contentTemplate, unwrap) {
+  ObservableHash.call(this, observations);
+  this.observersEnabled = false;
+
+  Object.defineProperties(this, {
+    _listeners: { configurable: true, value: [] }
+  });
+
+  this.mixins.forEach(function(mixin) {
+    if (mixin.computed) {
+      this.addComputed(this.computed);
+    }
+
+    if (mixin.listeners) {
+      Object.keys(mixin.listeners).forEach(function(eventName) {
+        var listener = mixin.listeners[eventName];
+        if (typeof listener === 'string') {
+          listener = mixin[listener];
+        }
+        this.listen(this.element, eventName, listener, this);
+      }, this);
+    }
+  }, this);
+
   this.element = element;
 
   if (this.template) {
@@ -38,7 +61,7 @@ Component.onExtend = function(Class, mixins) {
   });
 };
 
-Class.extend(Component, {
+ObservableHash.extend(Component, {
   mixins: [],
 
   get view() {
@@ -50,6 +73,7 @@ Class.extend(Component, {
   },
 
   bound: function() {
+    this.observersEnabled = true;
     callOnMixins(this, this.mixins, 'bound', arguments);
     if (this._view) {
       this._view.bind(this.template ? this : this.element._parentContext);
@@ -61,13 +85,23 @@ Class.extend(Component, {
     if (this._view) {
       this._view.attached();
     }
+
+    this._listeners.forEach(function(item) {
+      item.targetRef = addListener(this, item.target, item.eventName, item.listener);
+    }, this);
   },
 
   unbound: function() {
+    this._listeners.forEach(function(item) {
+      removeListener(item.targetRef, item.eventName, item.listener);
+      delete item.targetRef;
+    }, this);
+
     callOnMixins(this, this.mixins, 'unbound', arguments);
     if (this._view) {
       this._view.unbind();
     }
+    this.observersEnabled = false;
   },
 
   detached: function() {
@@ -75,9 +109,58 @@ Class.extend(Component, {
     if (this._view) {
       this._view.detached();
     }
-  }
+  },
+
+
+  listen: function(target, eventName, listener, context) {
+    if (typeof target === 'string') {
+      context = listener;
+      listener = eventName;
+      eventName = target;
+      target = this.element;
+    }
+
+    if (typeof listener !== 'function') {
+      throw new TypeError('listener must be a function');
+    }
+
+    listener = listener.bind(context || this);
+
+    var listenerData = {
+      target: target,
+      eventName: eventName,
+      listener: listener,
+      targetRef: null
+    };
+
+    this._listeners.push(listenerData);
+
+    if (this._bound) {
+      // If not bound will add on attachment
+      listenerData.targetRef = addListener(this, target, eventName, listener);
+    }
+  },
 
 });
+
+
+function getTarget(component, target) {
+  if (typeof target === 'string') {
+    target = component[target] || component.element.querySelector(target);
+  }
+  return target;
+}
+
+function addListener(component, target, eventName, listener) {
+  if ((target = getTarget(component, target))) {
+    target.addEventListener(eventName, listener);
+    return target;
+  }
+}
+
+function removeListener(target, eventName, listener) {
+  target.removeEventListener(eventName, listener);
+}
 
 
 // Calls the method by name on any mixins that have it defined
