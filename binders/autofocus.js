@@ -5,7 +5,7 @@ module.exports = function() {
   return {
 
     attached: function() {
-      if (!this.expression || this.observer.get()) {
+      if (!this.expression || this.get(this.expression)) {
         this.element.focus();
       }
     }

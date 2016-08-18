@@ -38,6 +38,8 @@ module.exports = function(specificKeyName, specificEventName) {
       } else {
         this.keyCode = keys[parts[0]];
       }
+
+      eventBinder.compiled.call(this);
     },
 
     shouldSkip: function(event) {
@@ -50,9 +52,6 @@ module.exports = function(specificKeyName, specificEventName) {
       }
     },
 
-    created: eventBinder.created,
-    unbound: eventBinder.unbound,
-    setEvent: eventBinder.setEvent,
-    clearEvent: eventBinder.clearEvent
+    created: eventBinder.created
   };
 };
