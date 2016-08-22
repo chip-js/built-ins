@@ -1,6 +1,6 @@
 {
   "name": "fragments-built-ins",
-  "version": "0.6.41",
+  "version": "0.6.42",
   "description": "Built-in binders, formatters, and animations for fragments.js-based frameworks.",
   "keywords": [
     "fragments-js"
@@ -27,7 +27,7 @@
     "docs": "docco -o docs */*.js"
   },
   "dependencies": {
-    "observations-js": "^0.2.40",
+    "fragments-js": "^0.6.15",
     "differences-js": "^0.1.0"
   },
   "peerDependencies": {

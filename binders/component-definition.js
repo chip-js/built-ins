@@ -1,16 +1,15 @@
 module.exports = Component;
-var ObservableHash = require('observations-js').ObservableHash;
+var ElementController = require('fragments-js/src/element-controller');
 var lifecycle = [ 'created', 'bound', 'attached', 'unbound', 'detached' ];
 
 
 function Component(observations, element, contentTemplate, unwrap) {
-  ObservableHash.call(this, observations);
+  // Extend ElementController https://github.com/chip-js/fragments-js/blob/master/src/element-controller.js
+  ElementController.call(this, observations);
   this.observersEnabled = false;
+  this.listenersEnabled = false;
 
-  Object.defineProperties(this, {
-    _listeners: { configurable: true, value: [] }
-  });
-
+  // Add computed, listeners, and properties for each mixin that has it
   this.mixins.forEach(function(mixin) {
     if (mixin.computed) {
       this.addComputed(this.computed);
@@ -23,6 +22,44 @@ function Component(observations, element, contentTemplate, unwrap) {
           listener = mixin[listener];
         }
         this.listen(this.element, eventName, listener, this);
+      }, this);
+    }
+
+    // Add properties that get set from attributes
+    if (mixin.properties) {
+      Object.keys(mixin.properties).forEach(function(propName) {
+        var attrName = dashify(propName);
+        var Cast = mixin.properties[propName];
+        var observer;
+
+        // Set the property to the attribute
+        this.watch('element.getAttribute("' + attrName + '")', function(value) {
+          // If it is an Object property (vs String/Boolean/Number), we are watching the expression string
+          if (Cast === Object) {
+            // Clean up the old observer if there was one
+            if (observer) {
+              observer.close();
+            }
+
+            if (value != null) {
+              observer = observations.createObserver(value, function(value) {
+                this[propName] = value;
+              }, this);
+              observer.bind(this.element._parentContext);
+            }
+
+          // Else we are watching the value
+          } else {
+            if (Cast === Boolean) {
+              if (value === '') {
+                value = true;
+              } else if (value === null) {
+                value = false;
+              }
+            }
+            this[propName] = (value === null) ? null : Cast(value);
+          }
+        });
       }, this);
     }
   }, this);
@@ -61,7 +98,7 @@ Component.onExtend = function(Class, mixins) {
   });
 };
 
-ObservableHash.extend(Component, {
+ElementController.extend(Component, {
   mixins: [],
 
   get view() {
@@ -86,17 +123,10 @@ ObservableHash.extend(Component, {
       this._view.attached();
     }
 
-    this._listeners.forEach(function(item) {
-      item.targetRef = addListener(this, item.target, item.eventName, item.listener);
-    }, this);
+    this.listenersEnabled = true;
   },
 
   unbound: function() {
-    this._listeners.forEach(function(item) {
-      removeListener(item.targetRef, item.eventName, item.listener);
-      delete item.targetRef;
-    }, this);
-
     callOnMixins(this, this.mixins, 'unbound', arguments);
     if (this._view) {
       this._view.unbind();
@@ -105,62 +135,14 @@ ObservableHash.extend(Component, {
   },
 
   detached: function() {
+    this.listenersEnabled = false;
     callOnMixins(this, this.mixins, 'detached', arguments);
     if (this._view) {
       this._view.detached();
     }
-  },
-
-
-  listen: function(target, eventName, listener, context) {
-    if (typeof target === 'string') {
-      context = listener;
-      listener = eventName;
-      eventName = target;
-      target = this.element;
-    }
-
-    if (typeof listener !== 'function') {
-      throw new TypeError('listener must be a function');
-    }
-
-    listener = listener.bind(context || this);
-
-    var listenerData = {
-      target: target,
-      eventName: eventName,
-      listener: listener,
-      targetRef: null
-    };
-
-    this._listeners.push(listenerData);
-
-    if (this._bound) {
-      // If not bound will add on attachment
-      listenerData.targetRef = addListener(this, target, eventName, listener);
-    }
-  },
+  }
 
 });
-
-
-function getTarget(component, target) {
-  if (typeof target === 'string') {
-    target = component[target] || component.element.querySelector(target);
-  }
-  return target;
-}
-
-function addListener(component, target, eventName, listener) {
-  if ((target = getTarget(component, target))) {
-    target.addEventListener(eventName, listener);
-    return target;
-  }
-}
-
-function removeListener(target, eventName, listener) {
-  target.removeEventListener(eventName, listener);
-}
 
 
 // Calls the method by name on any mixins that have it defined
@@ -168,4 +150,10 @@ function callOnMixins(context, mixins, name, args) {
   mixins.forEach(function(mixin) {
     if (typeof mixin[name] === 'function') mixin[name].apply(context, args);
   });
+}
+
+function dashify(str) {
+  return str.replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
+            .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+            .toLowerCase();
 }
