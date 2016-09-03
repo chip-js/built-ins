@@ -118,12 +118,12 @@ ElementController.extend(Component, {
   },
 
   attached: function() {
+    this.listenersEnabled = true;
+
     callOnMixins(this, this.mixins, 'attached', arguments);
     if (this._view) {
       this._view.attached();
     }
-
-    this.listenersEnabled = true;
   },
 
   unbound: function() {
