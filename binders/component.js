@@ -138,21 +138,7 @@ module.exports = function(ComponentClass, unwrapAttribute) {
       this.element.component = this.component;
 
       // Expose public properties onto the element
-      if (Array.isArray(this.component.public)) {
-        var descriptors = {};
-        this.component.public.forEach(function(name) {
-          if (typeof this[name] === 'function') {
-            descriptors[name] = { configurable: true, value: this[name].bind(this) };
-          } else {
-            descriptors[name] = {
-              configurable: true,
-              get: function() { return this.component[name] },
-              set: function(value) { this.component[name] = value }
-            };
-          }
-        }, this.component);
-        Object.defineProperties(this.element, descriptors);
-      }
+      addPublicProperties(this.component);
 
       this.element.dispatchEvent(new Event('componentized'));
 
@@ -174,11 +160,7 @@ module.exports = function(ComponentClass, unwrapAttribute) {
       }
 
       // Remove exposed public properties
-      if (Array.isArray(this.component.public)) {
-        this.component.public.forEach(function(name) {
-          delete this[name];
-        }, this.element);
-      }
+      removePublicProperties(this.component);
 
       this.component.element = null;
       this.element.component = null;
@@ -187,3 +169,39 @@ module.exports = function(ComponentClass, unwrapAttribute) {
 
   };
 };
+
+
+function addPublicProperties(component) {
+  component.mixins.forEach(function(mixin) {
+    if (!Array.isArray(mixin.public)) {
+      return;
+    }
+
+    var descriptors = {};
+    mixin.public.forEach(function(name) {
+      if (typeof component[name] === 'function') {
+        descriptors[name] = { configurable: true, value: component[name].bind(component) };
+      } else {
+        descriptors[name] = {
+          configurable: true,
+          get: function() { return component[name] },
+          set: function(value) { component[name] = value }
+        };
+      }
+    });
+
+    Object.defineProperties(component.element, descriptors);
+  });
+}
+
+
+function removePublicProperties(component) {
+  component.mixins.forEach(function(mixin) {
+    if (!Array.isArray(mixin.public)) {
+      return;
+    }
+    mixin.public.forEach(function(name) {
+      delete component.element[name];
+    });
+  });
+}
