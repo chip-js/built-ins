@@ -1,4 +1,4 @@
-var slideAnimation = require('./slide');
+var utils = require('./utils');
 var animating = new Map();
 
 /**
@@ -14,11 +14,6 @@ module.exports = function(options) {
     options: options,
 
     animateIn: function(element, done) {
-      var value = element.getComputedCSS(options.property);
-      if (!value || value === '0px') {
-        return done();
-      }
-
       var item = element.view && element.view._repeatItem_;
       if (item) {
         animating.set(item, element);
@@ -27,28 +22,16 @@ module.exports = function(options) {
         });
       }
 
-      var before = {};
-      var after = {};
-      before[this.options.property] = '0px';
-      after[this.options.property] = value;
-
-      // Do the slide
+      var transition = utils.getTransitionIn(element, this.options.property, this.options);
       element.style.overflow = 'hidden';
-      element.animate([
-        before,
-        after
-      ], this.options).onfinish = function() {
+
+      element.animate(transition.states, transition.options).onfinish = function() {
         element.style.overflow = '';
         done();
       };
     },
 
     animateOut: function(element, done) {
-      var value = element.getComputedCSS(options.property);
-      if (!value || value === '0px') {
-        return done();
-      }
-
       var item = element.view && element.view._repeatItem_;
       if (item) {
         var newElement = animating.get(item);
@@ -59,17 +42,10 @@ module.exports = function(options) {
         }
       }
 
-      var before = {};
-      var after = {};
-      before[this.options.property] = value;
-      after[this.options.property] = '0px';
-
-      // Do the slide
+      var transition = utils.getTransitionOut(element, this.options.property, this.options);
       element.style.overflow = 'hidden';
-      element.animate([
-        before,
-        after
-      ], this.options).onfinish = function() {
+
+      element.animate(transition.states, transition.options).onfinish = function() {
         element.style.overflow = '';
         done();
       };

@@ -1,3 +1,5 @@
+var utils = require('./utils');
+
 /**
  * Slide down and up and fade in and out
  */
@@ -11,43 +13,24 @@ module.exports = function(options) {
     options: options,
 
     animateIn: function(element, done) {
-      var value = element.getComputedCSS(this.options.property);
-      if (!value || value === '0px') {
-        return done();
-      }
-
-      var before = { opacity: '0' };
-      var after = { opacity: '1' };
-
-      before[this.options.property] = '0px';
-      after[this.options.property] = value;
-
+      var transition = utils.getTransitionIn(element, this.options.property, this.options);
+      transition.states[0].opacity = '0';
+      transition.states[1].opacity = '1';
       element.style.overflow = 'hidden';
-      element.animate([
-        before,
-        after
-      ], this.options).onfinish = function() {
+
+      element.animate(transition.states, transition.options).onfinish = function() {
         element.style.overflow = '';
         done();
       };
     },
 
     animateOut: function(element, done) {
-      var value = element.getComputedCSS(this.options.property);
-      if (!value || value === '0px') {
-        return done();
-      }
-
-      var before = { opacity: '1' };
-      var after = { opacity: '0' };
-      before[this.options.property] = value;
-      after[this.options.property] = '0px';
-
+      var transition = utils.getTransitionOut(element, this.options.property, this.options);
+      transition.states[0].opacity = '1';
+      transition.states[1].opacity = '2';
       element.style.overflow = 'hidden';
-      element.animate([
-        before,
-        after
-      ], this.options).onfinish = function() {
+
+      element.animate(transition.states, transition.options).onfinish = function() {
         element.style.overflow = '';
         done();
       };

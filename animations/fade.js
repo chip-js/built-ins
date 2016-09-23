@@ -1,3 +1,5 @@
+var utils = require('./utils');
+
 /**
  * Fade in and out
  */
@@ -8,17 +10,19 @@ module.exports = function(options) {
 
   return {
     options: options,
+
     animateIn: function(element, done) {
       element.animate([
         { opacity: '0' },
         { opacity: '1' }
-      ], this.options).onfinish = done;
+      ], utils.getTransitionOptions(element, this.options)).onfinish = done;
     },
+
     animateOut: function(element, done) {
       element.animate([
         { opacity: '1' },
         { opacity: '0' }
-      ], this.options).onfinish = done;
+      ], utils.getTransitionOptions(element, this.options)).onfinish = done;
     }
   };
 };
