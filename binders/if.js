@@ -134,11 +134,13 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
         this.animating = true;
         this.animateIn(this.showing, function() {
           if (this.animating) {
-            this.animating = false;
-            // if the value changed while this was animating run it again
-            if (this.lastValue !== index) {
-              this.updatedAnimated(this.lastValue);
-            }
+            setTimeout(function() {
+              this.animating = false;
+              // if the value changed while this was animating run it again
+              if (this.lastValue !== index) {
+                  this.updatedAnimated(this.lastValue);
+              }
+            }.bind(this));
           }
         });
       }
