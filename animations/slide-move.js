@@ -31,9 +31,12 @@ module.exports = function(options) {
       };
     },
 
-    animateOut: function(element, done) {
+    animateOut: function(element, done, skipMove) {
+      // Get the correct states before calling animateMove
+      var transition = utils.getTransitionOut(element, this.options.property, this.options);
+
       var item = element.view && element.view._repeatItem_;
-      if (item) {
+      if (item && !skipMove) {
         var newElement = animating.get(item);
         if (newElement && newElement.parentNode === element.parentNode) {
           // This item is being removed in one place and added into another. Make it look like its moving by making both
@@ -42,7 +45,6 @@ module.exports = function(options) {
         }
       }
 
-      var transition = utils.getTransitionOut(element, this.options.property, this.options);
       element.style.overflow = 'hidden';
 
       element.animate(transition.states, transition.options).onfinish = function() {
@@ -72,7 +74,7 @@ module.exports = function(options) {
       parent.replaceChild(savePositionElem, oldElement);
 
       // Ensure all the moves have been processed
-      Promise.resolve().then(function() {
+      return Promise.resolve().then(function() {
         var newLeft = newElement.offsetLeft;
         var newTop = newElement.offsetTop;
 
