@@ -1,5 +1,5 @@
 var urlExp = /(^|\s|\()((?:https?|ftp):\/\/[\-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~(_|])/gi;
-var wwwExp = /(^|[^\/])(www\.[\S]+\.\w{2,}(\b|$))/gim;
+var wwwExp = /(^|[^\/])(www\.[\S]+\.\w{2,}(\b|$)([\-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~(_|])?)/gi;
 /**
  * Adds automatic links to escaped content (be sure to escape user content). Can be used on existing HTML content as it
  * will skip URLs within HTML tags. Passing a value in the second parameter will set the target to that value or
