@@ -14,6 +14,7 @@ module.exports = function(options) {
 
     animateIn: function(element, done) {
       var transition = utils.getTransitionIn(element, this.options.property, this.options);
+      if (!transition) return done();
       transition.states[0].opacity = '0';
       transition.states[1].opacity = '1';
       element.style.overflow = 'hidden';
@@ -26,6 +27,7 @@ module.exports = function(options) {
 
     animateOut: function(element, done) {
       var transition = utils.getTransitionOut(element, this.options.property, this.options);
+      if (!transition) return done();
       transition.states[0].opacity = '1';
       transition.states[1].opacity = '2';
       element.style.overflow = 'hidden';

@@ -5,6 +5,9 @@ exports.getTransitionIn = function(element, property, defaults) {
   }
   var sides = property === 'height' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
   var styles = getComputedStyles(element);
+  if (!styles[property]) {
+    return;
+  }
 
   var before = {};
   var after = {};
@@ -29,7 +32,9 @@ exports.getTransitionIn = function(element, property, defaults) {
 
 exports.getTransitionOut = function(element, property, defaults) {
   var trans = exports.getTransitionIn(element, property, defaults);
-  trans.states.reverse();
+  if (trans) {
+    trans.states.reverse();
+  }
   return trans;
 };
 

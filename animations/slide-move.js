@@ -14,6 +14,9 @@ module.exports = function(options) {
     options: options,
 
     animateIn: function(element, done) {
+      var transition = utils.getTransitionIn(element, this.options.property, this.options);
+      if (!transition) return done();
+
       var item = element.view && element.view._repeatItem_;
       if (item) {
         animating.set(item, element);
@@ -22,7 +25,6 @@ module.exports = function(options) {
         });
       }
 
-      var transition = utils.getTransitionIn(element, this.options.property, this.options);
       element.style.overflow = 'hidden';
 
       element.animate(transition.states, transition.options).onfinish = function() {
@@ -34,6 +36,7 @@ module.exports = function(options) {
     animateOut: function(element, done, skipMove) {
       // Get the correct states before calling animateMove
       var transition = utils.getTransitionOut(element, this.options.property, this.options);
+      if (!transition) return done();
 
       var item = element.view && element.view._repeatItem_;
       if (item && !skipMove) {

@@ -14,6 +14,7 @@ module.exports = function(options) {
 
     animateIn: function(element, done) {
       var transition = utils.getTransitionIn(element, this.options.property, this.options);
+      if (!transition) return done();
       element.style.overflow = 'hidden';
 
       element.animate(transition.states, transition.options).onfinish = function() {
@@ -24,6 +25,7 @@ module.exports = function(options) {
 
     animateOut: function(element, done) {
       var transition = utils.getTransitionOut(element, this.options.property, this.options);
+      if (!transition) return done();
       element.style.overflow = 'hidden';
 
       element.animate(transition.states, transition.options).onfinish = function() {
