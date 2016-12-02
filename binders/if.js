@@ -86,6 +86,8 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
     },
 
     updatedRegular: function(index) {
+      this.animating = false;
+
       if (this.showing) {
         this.remove(this.showing);
         this.showing = null;
@@ -100,8 +102,10 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
     updatedAnimated: function(index) {
       this.lastValue = index;
       if (this.animating) {
-        // Obsoleted, will change after animation is finished.
-        this.showing.unbind();
+        if (this.showing) {
+          // Obsoleted, will change after animation is finished.
+          this.showing.unbind();
+        }
         return;
       }
 
