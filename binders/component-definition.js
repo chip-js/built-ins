@@ -67,12 +67,12 @@ function Component(observations, element, contentTemplate, unwrap) {
   this.element = element;
 
   if (this.template) {
-    this._view = this.template.createView();
+    this._view = this.template.createView(this.element.ownerDocument);
     if (contentTemplate) {
       this._componentContent = contentTemplate;
     }
   } else if (contentTemplate) {
-    this._view = contentTemplate.createView();
+    this._view = contentTemplate.createView(this.element.ownerDocument);
   }
 
   if (this._view) {

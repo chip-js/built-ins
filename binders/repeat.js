@@ -84,7 +84,7 @@ module.exports = function(compareByAttribute) {
 
     // Method for creating and setting up new views for our list
     createView: function(key, value) {
-      var view = this.template.createView();
+      var view = this.template.createView(this.element.ownerDocument);
       var context = value;
       if (this.valueName) {
         context = Object.create(this.context);

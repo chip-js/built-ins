@@ -21,7 +21,7 @@ module.exports = function() {
     bound: function() {
       var template = this.context._componentContent || this.defaultContent;
       if (template) {
-        this.content = template.createView();
+        this.content = template.createView(this.element.ownerDocument);
         this.content.bind(this.context.element._parentContext);
         this.element.appendChild(this.content);
         this.content.attached();

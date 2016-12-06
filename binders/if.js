@@ -94,7 +94,7 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
       }
       var template = this.templates[index];
       if (template) {
-        this.showing = template.createView();
+        this.showing = template.createView(this.element.ownerDocument);
         this.add(this.showing);
       }
     },
@@ -133,7 +133,7 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
 
       var template = this.templates[index];
       if (template) {
-        this.showing = template.createView();
+        this.showing = template.createView(this.element.ownerDocument);
         this.add(this.showing);
         this.animating = true;
         this.animateIn(this.showing, function() {
