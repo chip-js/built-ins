@@ -52,7 +52,7 @@ exports.getTransitionOptions = function(element, defaults) {
 };
 
 function getComputedStyles(element) {
-  if (element.ownerDocument.defaultView.opener) {
+  if (element.ownerDocument.defaultView && element.ownerDocument.defaultView.opener) {
     return element.ownerDocument.defaultView.getComputedStyle(element);
   }
   return window.getComputedStyle(element);
