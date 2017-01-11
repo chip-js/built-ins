@@ -3,7 +3,9 @@
  * which create HTML from something safe.
  */
 module.exports = function() {
-  return function(value) {
-    this.element.innerHTML = (value == null ? '' : value);
-  };
+  return html;
 };
+
+function html(value) {
+  this.element.innerHTML = (value == null ? '' : value);
+}

@@ -13,13 +13,7 @@ exports.getTransitionIn = function(element, property, defaults) {
   var after = {};
   before[property] = '0px';
   after[property] = styles[property];
-  sides.forEach(function(side) {
-    var Side = side[0].toUpperCase() + side.slice(1);
-    before['padding' + Side] = '0px';
-    before['margin' + Side] = '0px';
-    after['padding' + Side] = styles['padding' + Side];
-    after['margin' + Side] = styles['margin' + Side];
-  });
+  sides.forEach(updateSide.bind(this, before, after, styles));
 
   return {
     states: [ before, after ],
@@ -29,6 +23,14 @@ exports.getTransitionIn = function(element, property, defaults) {
     }
   };
 };
+
+function updateSide(before, after, styles, side) {
+  var Side = side[0].toUpperCase() + side.slice(1);
+  before['padding' + Side] = '0px';
+  before['margin' + Side] = '0px';
+  after['padding' + Side] = styles['padding' + Side];
+  after['margin' + Side] = styles['margin' + Side];
+}
 
 exports.getTransitionOut = function(element, property, defaults) {
   var trans = exports.getTransitionIn(element, property, defaults);

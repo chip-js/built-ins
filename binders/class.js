@@ -12,27 +12,35 @@ module.exports = function() {
 
       if (value) {
         if (typeof value === 'string') {
-          value.split(/\s+/).forEach(function(className) {
-            if (className) classes[className] = true;
-          });
+          value.split(/\s+/).forEach(this.addStringClass.bind(this, classes));
         } else if (typeof value === 'object') {
-          Object.keys(value).forEach(function(className) {
-            if (value[className]) classes[className] = true;
-          });
+          Object.keys(value).forEach(this.addObjectClass.bind(this, classes));
         }
       }
 
       if (this.classes) {
-        Object.keys(this.classes).forEach(function(className) {
-          if (!classes[className]) classList.remove(className);
-        });
+        Object.keys(this.classes).forEach(this.removeClass.bind(this, classes, classList));
       }
 
-      Object.keys(classes).forEach(function(className) {
-        classList.add(className);
-      });
+      Object.keys(classes).forEach(this.addClass.bind(this, classes, classList));
 
       this.classes = classes;
+    },
+
+    addStringClass: function(classes, className) {
+      if (className) classes[className] = true;
+    },
+
+    addObjectClass: function(classes, className) {
+      if (value[className]) classes[className] = true;
+    },
+
+    removeClass: function(classes, classList, className) {
+      if (!classes[className]) classList.remove(className);
+    },
+
+    addClass: function(classes, classList, className) {
+      classList.add(className);
     }
   };
 };

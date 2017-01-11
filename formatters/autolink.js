@@ -13,11 +13,13 @@ module.exports = function(value, target) {
     targetString = ' target="_blank"';
   }
 
-  return ('' + value).replace(/<[^>]+>|[^<]+/g, function(match) {
-    if (match.charAt(0) === '<') {
-      return match;
-    }
-    var replacedText = match.replace(urlExp, '$1<a href="$2"' + targetString + '>$2</a>');
-    return replacedText.replace(wwwExp, '$1<a href="http://$2"' + targetString + '>$2</a>');
-  });
+  return ('' + value).replace(/<[^>]+>|[^<]+/g, replaceMatch.bind(this, targetString));
 };
+
+function replaceMatch(targetString, match) {
+  if (match.charAt(0) === '<') {
+    return match;
+  }
+  var replacedText = match.replace(urlExp, '$1<a href="$2"' + targetString + '>$2</a>');
+  return replacedText.replace(wwwExp, '$1<a href="http://$2"' + targetString + '>$2</a>');
+}
