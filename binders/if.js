@@ -112,22 +112,7 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
       if (this.showing) {
         this.animating = true;
         this.showing.unbind();
-        this.animateOut(this.showing, function() {
-          if (this.animating) {
-            this.animating = false;
-
-            if (this.showing) {
-              // Make sure this wasn't unbound while we were animating (e.g. by a parent `if` that doesn't animate)
-              this.remove(this.showing);
-              this.showing = null;
-            }
-
-            if (this.context) {
-              // finish by animating the new element in (if any), unless no longer bound
-              this.updatedAnimated(this.lastValue);
-            }
-          }
-        });
+        this.animateOut(this.showing, this.animateOutHelper.bind(this));
         return;
       }
 
@@ -136,17 +121,36 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
         this.showing = template.createView(this.element.ownerDocument);
         this.add(this.showing);
         this.animating = true;
-        this.animateIn(this.showing, function() {
-          if (this.animating) {
-            setTimeout(function() {
-              this.animating = false;
-              // if the value changed while this was animating run it again
-              if (this.lastValue !== index) {
-                  this.updatedAnimated(this.lastValue);
-              }
-            }.bind(this));
+        this.animateIn(this.showing, this.animateInHelper.bind(this, index));
+      }
+    },
+
+    animateOutHelper: function() {
+      if (this.animating) {
+        this.animating = false;
+
+        if (this.showing) {
+          // Make sure this wasn't unbound while we were animating (e.g. by a parent `if` that doesn't animate)
+          this.remove(this.showing);
+          this.showing = null;
+        }
+
+        if (this.context) {
+          // finish by animating the new element in (if any), unless no longer bound
+          this.updatedAnimated(this.lastValue);
+        }
+      }
+    },
+
+    animateInHelper: function(index) {
+      if (this.animating) {
+        setTimeout(function() {
+          this.animating = false;
+          // if the value changed while this was animating run it again
+          if (this.lastValue !== index) {
+              this.updatedAnimated(this.lastValue);
           }
-        });
+        }.bind(this));
       }
     },
 

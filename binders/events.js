@@ -18,14 +18,7 @@ module.exports = function(specificEventName) {
     created: function() {
       var eventName = specificEventName || this.match;
 
-      this.element.addEventListener(eventName, function(event) {
-        if (this.shouldSkip(event)) return;
-
-        // queue up a sync to run afer this event is handled (we assume most events will alter the state of the
-        // application, otherwise there is no need to listen for them)
-        this.fragments.sync();
-        this.listener.call(this.context, this.element, event);
-      }.bind(this));
+      this.element.addEventListener(eventName, eventHandler.bind(this));
     },
 
     shouldSkip: function(event) {
@@ -33,3 +26,12 @@ module.exports = function(specificEventName) {
     }
   };
 };
+
+function eventHandler(event) {
+  if (this.shouldSkip(event)) return;
+
+  // queue up a sync to run afer this event is handled (we assume most events will alter the state of the
+  // application, otherwise there is no need to listen for them)
+  this.fragments.sync();
+  this.listener.call(this.context, this.element, event);
+}

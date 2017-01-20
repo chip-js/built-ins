@@ -41,15 +41,19 @@ module.exports = function(compareByAttribute) {
     },
 
     attached: function() {
-      this.views.forEach(function(view) {
-        view.attached();
-      });
+      this.views.forEach(this.attachView);
+    },
+
+    attachView: function(view) {
+      view.attached();
     },
 
     detached: function() {
-      this.views.forEach(function(view) {
-        view.detached();
-      });
+      this.views.forEach(this.detachView);
+    },
+
+    detachView: function(view) {
+      view.detached();
     },
 
     removeView: function(view) {
@@ -73,12 +77,14 @@ module.exports = function(compareByAttribute) {
     updateViewContexts: function(value) {
       // Keep the items updated as the array changes
       if (this.valueName) {
-        this.views.forEach(function(view, i) {
-          if (view.context) {
-            if (this.keyName) view.context[this.keyName] = i;
-            view.context[this.valueName] = value[i];
-          }
-        }, this);
+        this.views.forEach(this.updateViewContext.bind(this, value), this);
+      }
+    },
+
+    updateViewContext: function(value, view, i) {
+      if (view.context) {
+        if (this.keyName) view.context[this.keyName] = i;
+        view.context[this.valueName] = value[i];
       }
     },
 
@@ -113,15 +119,17 @@ module.exports = function(compareByAttribute) {
       if (Array.isArray(value) && value.length) {
         var frag = document.createDocumentFragment();
 
-        value.forEach(function(item, index) {
-          var view = this.createView(index, item);
-          this.views.push(view);
-          frag.appendChild(view);
-        }, this);
+        value.forEach(this.populateView.bind(this, frag), this);
 
         this.element.parentNode.insertBefore(frag, this.element.nextSibling);
         if (this.view.inDOM) this.attached();
       }
+    },
+
+    populateView: function(frag, item, index) {
+      var view = this.createView(index, item);
+      this.views.push(view);
+      frag.appendChild(view);
     },
 
     /**
@@ -132,13 +140,13 @@ module.exports = function(compareByAttribute) {
       // Remove everything first, then add again, allowing for element reuse from the pool
       var addedCount = 0;
 
-      changes.forEach(function(splice) {
-        if (splice.removed.length) {
-          var removed = this.views.splice(splice.index - addedCount, splice.removed.length);
+      for (var i = 0; i < changes.length; i++) {
+        if (changes[i].removed.length) {
+          var removed = this.views.splice(changes[i].index - addedCount, changes[i].removed.length);
           removed.forEach(this.removeView);
         }
-        addedCount += splice.addedCount;
-      }, this);
+        addedCount += changes[i].addedCount;
+      }
 
       // Add the new/moved views
       changes.forEach(function(splice) {
@@ -237,12 +245,14 @@ module.exports = function(compareByAttribute) {
     },
 
     unbound: function() {
-      this.views.forEach(function(view) {
-        view.unbind();
-        view._repeatItem_ = null;
-      });
+      this.views.forEach(this.unbindView);
       this.valueWhileAnimating = null;
       this.animating = false;
+    },
+
+    unbindView: function(view) {
+      view.unbind();
+      view._repeatItem_ = null;
     }
   };
 };
