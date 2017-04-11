@@ -15,13 +15,13 @@ module.exports = function() {
 
       this.element.addEventListener('focus', function() {
         if (!mouseEvent) {
-          this.select();
+          setTimeout(select.bind(null, this));
         }
       });
 
       this.element.addEventListener('mouseup', function() {
         if (!focused) {
-          this.select();
+          setTimeout(select.bind(null, this));
         }
         mouseEvent = false;
       });
@@ -29,3 +29,7 @@ module.exports = function() {
 
   };
 };
+
+function select(element) {
+  element.select();
+}
