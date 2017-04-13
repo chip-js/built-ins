@@ -1,6 +1,6 @@
-var urlExp = /(^|\s|\()((?:https?|ftp):\/\/[\-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~(_|])/gi;
+var urlExp = /(^|\s|\()(https?:\/\/[\-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~(_|])/gi;
 var wwwExp = /(^|[^\/])(www\.[\-A-Z0-9]+\.\w{2,}(\b|$)([\-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~(_|])?)/gi;
-var localExp = /^\s*((https?|ftp):\/\/)?(localhost|127\.0\.0\.1)/gi;
+var localExp = /^\s*(https?:\/\/)?(localhost|127\.0\.0\.1)/gi;
 
 /**
  * Adds automatic links to escaped content (be sure to escape user content). Can be used on existing HTML content as it
