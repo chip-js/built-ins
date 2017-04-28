@@ -1,7 +1,6 @@
 var urlExp = /(^|\s|\()((https?:\/\/|www\.)([-A-Z0-9]+)+\.\w{2,}[-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[-A-Z0-9+\u0026@#\/%=~(_|])/gi;
 var localExp = /^\s*(https?:\/\/)?(localhost|127\.0\.0\.1)/gi;
 var tagOrContentsExp = /<[^>]+>|[^<]+/g; // Use this to skip over tags by selecting them
-var container = document.createElement('div');
 
 /**
  * Adds automatic links to escaped content (be sure to escape user content). Can be used on existing HTML content as it
