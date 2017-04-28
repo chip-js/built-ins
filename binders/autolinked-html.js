@@ -12,8 +12,9 @@ function html(value) {
   autolink(this.element);
 }
 
-var urlExp = /(^|\s|\()((https?:\/\/|www\.)([\-A-Z0-9]+)+\.\w{2,}[\-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~(_|])/gi
-var localExp = /^\s*(https?:\/\/)?(localhost|127\.0\.0\.1)/gi;
+var urlExp = new RegExp('(^|\\s|\\()((https?://|www\\.)([-A-Z0-9]+)+\\.\\w{2,}[-A-Z0-9+\u0026@#/%?=()~_|!:,.;]*' +
+  '[-A-Z0-9+\u0026@#/%=~(_|])', 'gi');
+var localExp = /^https?:\/\/(localhost|127\.0\.0\.1)/i;
 var ignoreTags = { A: true, PRE: true, CODE: true, TEXTAREA: true };
 
 function autolink(element) {
@@ -24,22 +25,27 @@ function autolink(element) {
   // Go through each text node (not inside an ignored tag) and find urls
   while ((node = walker.nextNode())) {
     var content = node.nodeValue;
-    if (match = urlExp.exec(content)) {
+    while ((match = urlExp.exec(content))) {
+      var url = match[2];
+      var isWWW = match[3];
+      if (localExp.test(match[2])) {
+        continue;
+      }
       var parent = node.parentNode;
       var nextSibling = node.nextSibling;
-      var start = urlExp.lastIndex - match[2].length;
+      var start = urlExp.lastIndex - url.length;
       var end = urlExp.lastIndex;
-      var url = content.slice(start, end);
       node.nodeValue = content.slice(0, start);
       var anchor = doc.createElement('a');
       anchor.target = '_blank';
-      anchor.href = (match[1] === 'www.' ? 'http://' : '') + url;
+      anchor.href = (isWWW === 'www.' ? 'http://' : '') + url;
       anchor.appendChild(doc.createTextNode(url));
       parent.insertBefore(anchor, nextSibling);
       if (end < content.length) {
         parent.insertBefore(doc.createTextNode(content.slice(end)));
       }
       urlExp.lastIndex = 0;
+      break; // let the node walker find the next text node
     }
   }
 }

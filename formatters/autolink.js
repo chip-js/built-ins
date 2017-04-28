@@ -1,5 +1,6 @@
-var urlExp = /(^|\s|\()((https?:\/\/|www\.)([\-A-Z0-9]+)+\.\w{2,}[\-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~(_|])/gi;
+var urlExp = /(^|\s|\()((https?:\/\/|www\.)([-A-Z0-9]+)+\.\w{2,}[-A-Z0-9+\u0026@#\/%?=()~_|!:,.;]*[-A-Z0-9+\u0026@#\/%=~(_|])/gi;
 var localExp = /^\s*(https?:\/\/)?(localhost|127\.0\.0\.1)/gi;
+var tagOrContentsExp = /<[^>]+>|[^<]+/g; // Use this to skip over tags by selecting them
 var container = document.createElement('div');
 
 /**
@@ -15,7 +16,7 @@ module.exports = function(value, target) {
     targetString = ' target="_blank"';
   }
 
-  return ('' + value).replace(/<[^>]+>|[^<]+/g, replaceMatch.bind(this, targetString));
+  return ('' + value).replace(tagOrContentsExp, replaceMatch.bind(this, targetString));
 };
 
 function replaceMatch(targetString, match) {
