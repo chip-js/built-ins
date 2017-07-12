@@ -61,6 +61,7 @@ module.exports = function(fragments) {
    * ```
    */
   fragments.registerAttribute('html', require('./html')());
+  fragments.registerAttribute('autolinked-html', require('./autolinked-html')());
 
 
 
