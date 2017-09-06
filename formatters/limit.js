@@ -6,7 +6,7 @@ module.exports = function(value, limit) {
     if (limit < 0) {
       return value.slice(limit);
     } else {
-      value.slice(0, limit);
+      return value.slice(0, limit);
     }
   } else {
     return value;
