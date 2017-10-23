@@ -60,6 +60,12 @@ module.exports = function(eventsAttrName, fieldAttrName) {
       });
     },
 
+    attached: function() {
+      if (this.methods.delayFirstSet) {
+        this.methods.set.call(this.element, this.get(this.expression), this.valueField);
+      }
+    },
+
     updated: function(value) {
       if (this.methods.get.call(this.element, this.valueField) != value) {
         this.methods.set.call(this.element, value, this.valueField);
@@ -90,6 +96,7 @@ inputMethods = {
   },
 
   select: {
+    delayFirstSet: true,
     get: function(valueField) {
       if (valueField) {
         return this.options[this.selectedIndex].valueObject;
