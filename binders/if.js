@@ -75,9 +75,11 @@ module.exports = function(elseIfAttrName, elseAttrName, unlessAttrName, elseUnle
     },
 
     add: function(view) {
-      view.bind(this.context);
-      this.element.parentNode.insertBefore(view, this.element.nextSibling);
-      view.attached();
+      if (this.element && this.element.parentNode && this.element.nextSibling) {
+        view.bind(this.context);
+        this.element.parentNode.insertBefore(view, this.element.nextSibling);
+        view.attached();
+      }
     },
 
     // Doesn't do much, but allows sub-classes to alter the functionality.
